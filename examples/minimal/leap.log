@@ -1,0 +1,65 @@
+log started: Fri Sep 13 05:32:11 2024
+
+Log file: ./leap.log
+> LCC = loadpdb LCC_input.pdb
+Loading PDB file: ./LCC_input.pdb
+Matching PDB residue names to LEaP variables.
+  Added missing heavy atom: .R<CHL 663>.A<C1 47>
+  Added missing heavy atom: .R<CHL 663>.A<C2 48>
+  Added missing heavy atom: .R<CHL 663>.A<C3 49>
+  Added missing heavy atom: .R<CHL 663>.A<C4 50>
+  Added missing heavy atom: .R<CHL 663>.A<C5 51>
+  Added missing heavy atom: .R<CHL 663>.A<C6 52>
+  Added missing heavy atom: .R<CHL 663>.A<C7 53>
+  Added missing heavy atom: .R<CHL 663>.A<C8 54>
+  Added missing heavy atom: .R<CHL 663>.A<C9 55>
+  Added missing heavy atom: .R<CHL 663>.A<C10 56>
+  Added missing heavy atom: .R<CHL 663>.A<C11 57>
+  Added missing heavy atom: .R<CHL 663>.A<C12 58>
+  Added missing heavy atom: .R<CHL 663>.A<C13 59>
+  Added missing heavy atom: .R<CHL 663>.A<C14 60>
+  Added missing heavy atom: .R<CHL 663>.A<C15 61>
+  Added missing heavy atom: .R<CHL 663>.A<C16 62>
+  Added missing heavy atom: .R<CHL 663>.A<C17 63>
+  Added missing heavy atom: .R<CHL 663>.A<C18 64>
+  Added missing heavy atom: .R<CHL 663>.A<C19 65>
+  Added missing heavy atom: .R<CHL 663>.A<C20 66>
+  Added missing heavy atom: .R<CLA 669>.A<C6 51>
+  Added missing heavy atom: .R<CLA 669>.A<C7 52>
+  Added missing heavy atom: .R<CLA 669>.A<C8 53>
+  Added missing heavy atom: .R<CLA 669>.A<C9 54>
+  Added missing heavy atom: .R<CLA 669>.A<C10 55>
+  Added missing heavy atom: .R<CLA 669>.A<C11 56>
+  Added missing heavy atom: .R<CLA 669>.A<C12 57>
+  Added missing heavy atom: .R<CLA 669>.A<C13 58>
+  Added missing heavy atom: .R<CLA 669>.A<C14 59>
+  Added missing heavy atom: .R<CLA 669>.A<C15 60>
+  Added missing heavy atom: .R<CLA 669>.A<C16 61>
+  Added missing heavy atom: .R<CLA 669>.A<C17 62>
+  Added missing heavy atom: .R<CLA 669>.A<C18 63>
+  Added missing heavy atom: .R<CLA 669>.A<C19 64>
+  Added missing heavy atom: .R<CLA 669>.A<C20 65>
+  Added missing heavy atom: .R<CHL 719>.A<C1 47>
+  Added missing heavy atom: .R<CHL 719>.A<C2 48>
+  Added missing heavy atom: .R<CHL 719>.A<C3 49>
+  Added missing heavy atom: .R<CHL 719>.A<C4 50>
+  Added missing heavy atom: .R<CHL 719>.A<C5 51>
+  Added missing heavy atom: .R<CHL 719>.A<C6 52>
+  Added missing heavy atom: .R<CHL 719>.A<C7 53>
+  Added missing heavy atom: .R<CHL 719>.A<C8 54>
+  Added missing heavy atom: .R<CHL 719>.A<C9 55>
+  Added missing heavy atom: .R<CHL 719>.A<C10 56>
+  Added missing heavy atom: .R<CHL 719>.A<C11 57>
+  Added missing heavy atom: .R<CHL 719>.A<C12 58>
+  Added missing heavy atom: .R<CHL 719>.A<C13 59>
+  Added missing heavy atom: .R<CHL 719>.A<C14 60>
+  Added missing heavy atom: .R<CHL 719>.A<C15 61>
+  Added missing heavy atom: .R<CHL 719>.A<C16 62>
+  Added missing heavy atom: .R<CHL 719>.A<C17 63>
+  Added missing heavy atom: .R<CHL 719>.A<C18 64>
+  Added missing heavy atom: .R<CHL 719>.A<C19 65>
+  Added missing heavy atom: .R<CHL 719>.A<C20 66>
+> savepdb LCC LCC_no_sc.pdb
+Writing pdb file: LCC_no_sc.pdb
+> quit
+	Quit

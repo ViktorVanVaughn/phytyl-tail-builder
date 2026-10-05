@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "phytyl-tail-builder"
+dynamic = ["version"]
+description = "Reposition cofactor tail atoms added by Amber tleap"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    {name = "Joel Santos"},
+    {name = "Chris John"},
+    {name = "Lorenzo Cupellini"},
+    {name = "Benedetta Mennucci"},
+]
+keywords = ["amber", "tleap", "molecular-dynamics", "chlorophyll", "structure-preparation"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Chemistry",
+]
+dependencies = ["numpy", "scipy"]
+
+[project.optional-dependencies]
+test = ["pytest>=7", "matplotlib"]
+figures = ["matplotlib"]
+
+[project.urls]
+Homepage = "https://github.com/ViktorVanVaughn/phytyl-tail-builder"
+Source = "https://github.com/ViktorVanVaughn/phytyl-tail-builder"
+Issues = "https://github.com/ViktorVanVaughn/phytyl-tail-builder/issues"
+
+[project.scripts]
+phytyl-tail-builder = "phytyl_tail_builder.cli:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "phytyl_tail_builder.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]

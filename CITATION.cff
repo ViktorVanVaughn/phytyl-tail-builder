@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the associated work."
+title: "phytyl-tail-builder"
+type: software
+authors:
+  - family-names: "Santos"
+    given-names: "Joel"
+    affiliation: "Università di Pisa"
+  - family-names: "John"
+    given-names: "Chris"
+    affiliation: "Università di Pisa"
+  - family-names: "Cupellini"
+    given-names: "Lorenzo"
+    affiliation: "Università di Pisa"
+  - family-names: "Mennucci"
+    given-names: "Benedetta"
+    affiliation: "Università di Pisa"
+repository-code: "https://github.com/ViktorVanVaughn/phytyl-tail-builder"
+license: MIT
+abstract: "Grid-based reconstruction of truncated chlorophyll phytyl tails for Amber (tleap) molecular dynamics set-up."

@@ -1,0 +1,118 @@
+# Rebuild hydrogens on the phytyl-tail-builder output and write Amber topology.
+# Replace $PARAMS with the folder holding the cofactor parameters.
+
+source leaprc.lipid21
+source leaprc.water.tip3p
+source leaprc.gaff2
+source leaprc.protein.ff14SB
+
+
+# Load libraries (charges/topology) for cofactors
+loadoff $PARAMS/data/CLX/CLA.lib
+loadoff $PARAMS/data/NEX/NEX.lib
+loadoff $PARAMS/data/LUT/LUT.lib
+loadoff $PARAMS/data/XAT/XAT.lib
+loadoff $PARAMS/data/CLX/CHL.lib
+loadoff $PARAMS/data/BCR/BCR.lib
+loadoff $PARAMS/data/LHG/LHG.lib
+
+
+# Load parameters for ions and cofactors
+loadamberparams frcmod.ionsjc_tip3p
+loadamberparams $PARAMS/data/CLX/CLX.frcmod
+loadamberparams $PARAMS/data/NEX/NEX.frcmod
+loadamberparams $PARAMS/data/LUT/LUT.frcmod
+loadamberparams $PARAMS/data/XAT/XAT.frcmod
+loadamberparams $PARAMS/data/BCR/BCR.frcmod
+loadamberparams $PARAMS/data/LHG/LHG.frcmod
+
+addPdbAtomMap {
+  {"HMA1"  "1HMA"}
+  {"HMA2"  "2HMA"}
+  {"HMA3"  "3HMA"}
+  {"HAA1"  "1HAA"}
+  {"HAA2"  "2HAA"}
+  {"HBA1"  "1HBA"}
+  {"HBA2"  "2HBA"}
+  {"HMB1"  "1HMB"}
+  {"HMB2"  "2HMB"}
+  {"HMB3"  "3HMB"}
+  {"HBB1"  "1HBB"}
+  {"HBB2"  "2HBB"}
+  {"HMC1"  "1HMC"}
+  {"HMC2"  "2HMC"}
+  {"HMC3"  "3HMC"}
+  {"HAC1"  "1HAC"}
+  {"HAC2"  "2HAC"}
+  {"HBC1"  "1HBC"}
+  {"HBC2"  "2HBC"}
+  {"HBC3"  "3HBC"}
+  {"HMD1"  "1HMD"}
+  {"HMD2"  "2HMD"}
+  {"HMD3"  "3HMD"}
+  {"HED1"  "1HED"}
+  {"HED2"  "2HED"}
+  {"HED3"  "3HED"}
+  {"H101"  "1H10"}
+  {"H102"  "2H10"}
+  {"H111"  "1H11"}
+  {"H112"  "2H11"}
+  {"H121"  "1H12"}
+  {"H122"  "2H12"}
+  {"H141"  "1H14"}
+  {"H142"  "2H14"}
+  {"H143"  "3H14"}
+  {"H151"  "1H15"}
+  {"H152"  "2H15"}
+  {"H161"  "1H16"}
+  {"H162"  "2H16"}
+  {"H171"  "1H17"}
+  {"H172"  "2H17"}
+  {"H191"  "1H19"}
+  {"H192"  "2H19"}
+  {"H193"  "3H19"}
+  {"H201"  "1H20"}
+  {"H202"  "2H20"}
+  {"H203"  "3H20"}
+  {"H11"    "1H1"}
+  {"H12"    "2H1"}
+  {"H41"    "1H4"}
+  {"H42"    "2H4"}
+  {"H43"    "3H4"}
+  {"H51"    "1H5"}
+  {"H52"    "2H5"}
+  {"H61"    "1H6"}
+  {"H62"    "2H6"}
+  {"H71"    "1H7"}
+  {"H72"    "2H7"}
+  {"H91"    "1H9"}
+  {"H92"    "2H9"}
+  {"H93"    "3H9"}
+}
+
+# Load the phytyl-tail-builder output
+LCC = loadpdb LCC_no_sc_no_Hy.pdb
+
+# Manually add bonds for the embedded lipid 
+
+#LHCII
+bond LCC.676.C21 LCC.677.C12
+bond LCC.676.C11 LCC.678.C12
+bond LCC.692.C21 LCC.693.C12
+bond LCC.692.C11 LCC.694.C12
+bond LCC.707.C21 LCC.708.C12
+bond LCC.707.C11 LCC.709.C12
+#CP29
+bond LCC.982.C21 LCC.983.C12
+bond LCC.982.C11 LCC.984.C12
+#CP24
+bond LCC.1208.C21 LCC.1209.C12
+bond LCC.1208.C11 LCC.1210.C12
+
+check LCC
+charge LCC
+
+savepdb LCC LCC.pdb
+saveamberparm LCC LCC.prmtop LCC.inpcrd
+
+quit
