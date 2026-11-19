@@ -143,6 +143,14 @@ def test_residues_split_on_records_not_resseq(tmp_path):
         [("CHL", "9998"), ("CLA", "9999"), ("CHL", "1"), ("CHL", "0"), ("CLA", "1"), ("CHL", "9998")]
 
 
+def test_five_digit_resseq_of_savepdb(tmp_path):
+    f = tmp_path / "big.pdb"
+    # record, serial, name, resName, chain, five-digit resSeq (columns 23-27), coordinates from column 31
+    line = "ATOM  " + "    1" + "  C1  " + "CLA" + "  " + "10234" + "   " + "   1.000   2.000   3.000\n"
+    f.write_text(line + line.replace("10234", "10235"))
+    assert [r['resseq'] for r in read_residues(f)] == ["10234", "10235"]
+
+
 def test_remove_hydrogens_only_in_listed_residues(tmp_path):
     src, dst = tmp_path / "in.pdb", tmp_path / "out.pdb"
     src.write_text(pdb_line(1, "C1", "CLA", 1, (0, 0, 0)) + pdb_line(2, "H11", "CLA", 1, (0, 0, 1))

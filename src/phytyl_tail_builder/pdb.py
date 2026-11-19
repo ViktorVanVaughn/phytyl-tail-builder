@@ -42,7 +42,8 @@ def residue_indices(lines):
 def read_residues(pdb_path):
     """Return a list of residues in file order.
 
-    Each residue is a dict with 'name', 'resseq' (as written), 'chain' and
+    Each residue is a dict with 'name', 'resseq' (as written, with any insertion code;
+    tleap's savepdb writes five digits from 10000, into the insertion-code column), 'chain' and
     'atoms' ({atom_name: np.array([x, y, z])}).
     """
     residues = []
@@ -51,7 +52,7 @@ def read_residues(pdb_path):
             if index is None:
                 continue
             if index == len(residues):
-                residues.append({'name': line[17:20].strip(), 'resseq': line[22:26].strip(),
+                residues.append({'name': line[17:20].strip(), 'resseq': line[22:27].strip(),
                                  'chain': line[21].strip(), 'atoms': {}})
             xyz = np.array([float(line[30:38]), float(line[38:46]), float(line[46:54])])
             residues[index]['atoms'][_atom_name(line)] = xyz
@@ -78,7 +79,7 @@ def map_residues(pre_residues, post_residues, leap_residues):
     """
     if not pre_residues:
         raise ValueError("loadpdb file has no atoms")
-    first = int(pre_residues[0]['resseq'])
+    first = int(re.match(r'-?\d+', pre_residues[0]['resseq']).group())
     mapping = {}
     for number, name in leap_residues.items():
         index = number - first
