@@ -1,29 +1,51 @@
 #!/usr/bin/env bash
 # Load a phytyl-tail-builder output in tleap, rebuild hydrogens and write Amber topology.
 #
-# usage: scripts/check_amber.sh TLEAP_IN PDB [OUTDIR]
+# usage: scripts/check_amber.sh [-p PARAMS] [-u UNIT] [-r RES]... TLEAP_IN PDB [OUTDIR]
 #
-# TLEAP_IN is the tleap script used for the original run. Its parameter paths
-# are pointed at $PARAMS (default ~/parameters/force-fields/PSII_cofactors),
-# loadpdb is pointed at PDB, and check, charge and saveamberparm are added.
-# Everything is written to OUTDIR (default: a new folder next to PDB).
+#   -p PARAMS  cofactor parameter folder (default: $PARAMS); replaces $PARAMS
+#              and any .../PSII_cofactors/ path in TLEAP_IN
+#   -u UNIT    unit name (default: the variable of the loadpdb line in TLEAP_IN)
+#   -r RES     load residue RES as its ordinary (non-terminal) form even after a
+#              TER, e.g. -r ASP; may be repeated
+#
+# TLEAP_IN is the tleap script used for the original run. loadpdb is pointed
+# at PDB, and check, charge and saveamberparm are added. Everything is written
+# to OUTDIR (default: a new folder next to PDB).
 
 set -euo pipefail
 
-if [ $# -lt 2 ]; then
-    sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'
-    exit 2
-fi
+usage() { sed -n '2,15p' "$0" | sed 's/^# \{0,1\}//'; exit 2; }
+
+UNIT=
+RESMAP=()
+while getopts "p:u:r:h" opt; do
+    case $opt in
+        p) PARAMS=$OPTARG ;;
+        u) UNIT=$OPTARG ;;
+        r) RESMAP+=("$OPTARG") ;;
+        *) usage ;;
+    esac
+done
+shift $((OPTIND - 1))
+[ $# -ge 2 ] || usage
 
 TLEAP_IN=$1
 PDB=$(realpath "$2")
 OUTDIR=${3:-$(dirname "$PDB")/amber_check}
-PARAMS=${PARAMS:-$HOME/parameters/force-fields/PSII_cofactors}
 
 [ -f "$TLEAP_IN" ] || { echo "not found: $TLEAP_IN" >&2; exit 1; }
 [ -f "$PDB" ] || { echo "not found: $PDB" >&2; exit 1; }
-[ -d "$PARAMS" ] || { echo "parameter folder not found: $PARAMS (set PARAMS)" >&2; exit 1; }
+[ -n "${PARAMS:-}" ] || { echo "no parameter folder: use -p PARAMS or set PARAMS" >&2; exit 1; }
+[ -d "$PARAMS" ] || { echo "parameter folder not found: $PARAMS" >&2; exit 1; }
+PARAMS=$(realpath "$PARAMS")
 command -v tleap >/dev/null || { echo "tleap not on PATH" >&2; exit 1; }
+if [ -z "$UNIT" ]; then
+    UNIT=$(sed -nE 's/^\s*(\w+)\s*=\s*loadpdb\s.*/\1/ip' "$TLEAP_IN" | tail -1)
+    [ -n "$UNIT" ] || { echo "no loadpdb line in $TLEAP_IN (use -u UNIT)" >&2; exit 1; }
+fi
+echo "parameters:       $PARAMS"
+echo "unit:             $UNIT"
 
 mkdir -p "$OUTDIR"
 OUTDIR=$(realpath "$OUTDIR")
@@ -36,19 +58,23 @@ sed -E \
     -e 's#\S*/(frcmod\.ionsjc_tip3p)#\1#' \
     -e 's#\S*/PSII_cofactors/#'"$PARAMS"'/#' \
     -e 's#\$PARAMS#'"$PARAMS"'#g' \
-    -e 's#^(\s*\w+\s*=\s*loadpdb\s+).*#\1'"$PDB"'#' \
-    -e '/^\s*(check|charge|savepdb|saveamberparm|savemol2|quit)\b/d' \
+    -e 's#^(\s*\w+\s*=\s*loadpdb\s+).*#\1'"$PDB"'#I' \
+    -e '/^\s*(check|charge|savepdb|saveamberparm|savemol2|quit)\b/Id' \
     "$TLEAP_IN" > "$IN"
 
-# savepdb writes a TER before ASP 442, which is not a chain start in the full
-# system, but the force field maps a residue after a TER to its N-terminal form
-# (NASP). Load ASP as the ordinary residue.
-sed -i -E '0,/^\s*\w+\s*=\s*loadpdb\s/{s//addPdbResMap { { 0 "ASP" "ASP" } }\n&/}' "$IN"
+# savepdb can write a TER before a residue that is not a chain start in the
+# full system, and the force field then maps it to its N-terminal form (e.g.
+# NASP). -r RES loads RES as the ordinary residue.
+if [ ${#RESMAP[@]} -gt 0 ]; then
+    MAP=""
+    for r in "${RESMAP[@]}"; do MAP+="{ 0 \"$r\" \"$r\" } "; done
+    sed -i -E '0,/^\s*\w+\s*=\s*loadpdb\s/I{s//addPdbResMap { '"$MAP"'}\n&/}' "$IN"
+fi
 
 # bond lines use the residue numbers of the original loadpdb file, while PDB
 # is numbered as written by savepdb. Map each original residue to the PDB
 # residue holding the coordinates of its first atom and renumber the bond lines.
-PRE=$(sed -nE 's#^\s*\w+\s*=\s*loadpdb\s+(\S+).*#\1#p' "$TLEAP_IN" | head -1)
+PRE=$(sed -nE 's#^\s*\w+\s*=\s*loadpdb\s+(\S+).*#\1#Ip' "$TLEAP_IN" | head -1)
 PRE="$(dirname "$TLEAP_IN")/$PRE"
 if [ -f "$PRE" ] && grep -qE '^\s*bond\s' "$IN"; then
     python3 - "$PRE" "$PDB" "$IN" <<'PY'
@@ -82,9 +108,9 @@ fi
 
 cat >> "$IN" <<EOF
 
-check LCC
-charge LCC
-saveamberparm LCC $OUTDIR/LCC.prmtop $OUTDIR/LCC.inpcrd
+check $UNIT
+charge $UNIT
+saveamberparm $UNIT $OUTDIR/$UNIT.prmtop $OUTDIR/$UNIT.inpcrd
 quit
 EOF
 
@@ -98,7 +124,7 @@ echo "unknown residues: $(count 'Unknown residue')"
 echo "added heavy atoms: $(count 'Added missing heavy atom')"
 grep -E 'Leap added [0-9]+ missing atoms|^ +[0-9]+ (Heavy|H / lone pairs)' "$LOG" || true
 grep -E 'Total (unperturbed )?charge' "$LOG" | tail -1 || true
-for f in LCC.prmtop LCC.inpcrd; do
+for f in "$UNIT.prmtop" "$UNIT.inpcrd"; do
     if [ -s "$OUTDIR/$f" ]; then echo "$f: written"; else echo "$f: missing"; fi
 done
-[ -s "$OUTDIR/LCC.prmtop" ] && [ -s "$OUTDIR/LCC.inpcrd" ]
+[ -s "$OUTDIR/$UNIT.prmtop" ] && [ -s "$OUTDIR/$UNIT.inpcrd" ]
