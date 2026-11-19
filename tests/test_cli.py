@@ -88,8 +88,20 @@ def test_check_cli(capsys):
     assert check_main([str(MINIMAL / "LCC_input.pdb"), "--resnames", "CLA"]) == 0  # partial, nothing wrong
 
 
-def test_check_cli_with_nothing_to_check():
+def test_check_cli_with_nothing_to_check(tmp_path):
     assert check_main([str(MINIMAL / "LCC_input.pdb"), "--resnames", "cla"]) == 2
+    protein = tmp_path / "protein.pdb"
+    protein.write_text("".join(line for line in (MINIMAL / "LCC_input.pdb").read_text().splitlines(True)
+                               if line[17:20] not in ("CLA", "CHL")))
+    assert check_main([str(protein)]) == 2
+
+
+def test_check_cli_finds_phytyl_residues_by_atoms(tmp_path, capsys):
+    renamed = tmp_path / "renamed.pdb"
+    renamed.write_text((MINIMAL / "LCC_input.pdb").read_text().replace(" CLA ", " BCL "))
+    check_main([str(renamed)])
+    names = {line.split("\t")[2] for line in capsys.readouterr().out.splitlines()[1:]}
+    assert names == {"BCL", "CHL"}
 
 
 def test_check_cli_entry_point():

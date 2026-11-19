@@ -8,13 +8,14 @@ from .optimizer import POTENTIALS, build_sphere
 from .parser import parse_leap_log_for_atoms, parse_tleap_in
 from .pdb import (
     extract_all_coordinates,
+    first_number,
     map_residues,
     read_residues,
     remove_hydrogens_from_rebuilt,
     residue_label,
     write_coordinates,
 )
-from .stereo import RESNAMES, TAIL_BONDS, check_residue, report_rows, write_report
+from .stereo import TAIL_BONDS, check_residue, has_phytyl, report_rows, write_report
 from .torsion import build_torsion
 
 logger = logging.getLogger(__name__)
@@ -88,16 +89,20 @@ def build(tleap_in_path, leap_log_path, templates_dir=None, output_prefix=".",
         mol2_path = templates_dir / f"{res_name}.mol2"
         if res_name not in templates and mol2_path.exists():
             templates[res_name] = read_mol2(mol2_path)
+    pre_residues, post_residues = read_residues(pdb_in), read_residues(pdb_out)
     skipped = sorted({name for _, name, _ in extracted_atoms} - set(templates))
-    unbuilt = [name for name in skipped if name in RESNAMES]
+    # a residue with a phytyl ester (any name) must not be skipped: its tail would stay unbuilt and unchecked
+    first = first_number(pre_residues)
+    unbuilt = sorted({name for num, name, atom in extracted_atoms if name in skipped
+                      and 0 <= num - first < len(pre_residues)
+                      and has_phytyl(set(pre_residues[num - first]['atoms']) | {atom})})
     if unbuilt:
         raise ValueError(f"No template for {', '.join(unbuilt)} in {templates_dir}: "
-                         f"their tails would stay where tleap placed them, unchecked")
+                         f"their phytyl tails would stay where tleap placed them, unchecked")
     if skipped:
         logger.warning("No template for %s in %s; their added atoms are left as placed by tleap",
                        ", ".join(skipped), templates_dir)
 
-    pre_residues, post_residues = read_residues(pdb_in), read_residues(pdb_out)
     mapping = map_residues(pre_residues, post_residues,
                            {num: name for num, name, _ in extracted_atoms if name in templates})
     missing = {}

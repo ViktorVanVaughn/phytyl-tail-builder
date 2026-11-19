@@ -68,6 +68,13 @@ def residue_label(residue):
     return f"{residue['name']} {residue['resseq']}"
 
 
+def first_number(residues):
+    """tleap's number for the first residue of a loadpdb file: its resSeq (insertion code dropped)."""
+    if not residues:
+        raise ValueError("loadpdb file has no atoms")
+    return int(re.match(r'-?\d+', residues[0]['resseq']).group())
+
+
 def map_residues(pre_residues, post_residues, leap_residues):
     """Map leap.log residue numbers to residue indices of the savepdb file.
 
@@ -77,9 +84,7 @@ def map_residues(pre_residues, post_residues, leap_residues):
     loadpdb residue must sit at the same coordinates in the savepdb residue.
     Raises ValueError on any mismatch. Returns {leap_number: residue_index}.
     """
-    if not pre_residues:
-        raise ValueError("loadpdb file has no atoms")
-    first = int(re.match(r'-?\d+', pre_residues[0]['resseq']).group())
+    first = first_number(pre_residues)
     mapping = {}
     for number, name in leap_residues.items():
         index = number - first

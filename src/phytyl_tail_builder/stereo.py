@@ -1,4 +1,4 @@
-"""Stereochemistry of the phytyl tail of CLA/CHL, in template atom names.
+"""Stereochemistry of phytyl tails, in the PDB atom names of chlorophylls and pheophytins.
 
 Natural phytyl is (2E,7R,11R): phytyl C7 and C11 are template atoms C8 and
 C13, and the double bond is C2=C3 (E means C1-C2-C3-C5 near 180 degrees).
@@ -17,7 +17,6 @@ TAIL_BONDS = [
     ("C16", "C17"), ("C17", "C18"), ("C18", "C19"), ("C18", "C20"),
 ]
 TAIL_ATOMS = ["O2A"] + [f"C{i}" for i in range(1, 21)]
-RESNAMES = ("CLA", "CHL")   # the Amber residues with a phytyl tail
 # Stereocentre -> its heavy substituents (chain towards C1, methyl, chain away).
 CENTRES = {"C8": ("C7", "C9", "C10"), "C13": ("C12", "C14", "C15")}
 EZ_DIHEDRAL = ("C1", "C2", "C3", "C5")
@@ -40,6 +39,15 @@ REFERENCE = {name: np.array(xyz) for name, xyz in {
     "C16": (-1.951, -14.987, 2.096), "C17": (-2.825, -16.127, 1.552), "C18": (-3.855, -16.699, 2.546),
     "C19": (-3.195, -17.351, 3.771), "C20": (-4.786, -17.698, 1.842),
 }.items()}
+
+
+def has_phytyl(atom_names):
+    """True for a residue with a phytyl ester in PDB atom names: CGA and tail atoms (O2A, C1-C20).
+
+    The PDB chemical components CLA, CHL, CL7, F6C (chlorophylls a, b, d, f), BCL, BCB (bacteriochlorophylls
+    a, b), PHO and BPH (pheophytins) all name and bond their phytyl atoms this way.
+    """
+    return "CGA" in atom_names and any(n in atom_names for n in TAIL_ATOMS)
 
 
 def chirality(coords, center, a, b, c):

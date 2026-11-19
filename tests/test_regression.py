@@ -133,6 +133,22 @@ def test_resolved_atoms_are_kept_unless_discarded(tmp_path):
             assert np.allclose(by_name_res[key], xyz, atol=TOL), key
 
 
+def test_any_residue_name_with_phytyl_atoms(tmp_path):
+    """CHL renamed PHO (a pheophytin) everywhere: recognised by its atoms, built exactly as before."""
+    tleap_in, leap_log = copy_example(tmp_path)
+    for name in ("LCC_input.pdb", "LCC_no_sc.pdb"):
+        lines = (tmp_path / name).read_text().splitlines(True)
+        renamed = [f"{x[:17]}PHO{x[20:]}" if x[17:20] == "CHL" else x for x in lines]
+        (tmp_path / name).write_text("".join(renamed))
+    leap_log.write_text(leap_log.read_text().replace(".R<CHL ", ".R<PHO "))
+    (tmp_path / "CHL.mol2").rename(tmp_path / "PHO.mol2")
+    out, rows = build(tleap_in, leap_log, output_prefix=tmp_path / "out", fix_resolved_stereo=True)
+    assert {r["resname"] for r in rows} == {"CLA", "PHO"} and all(r["ok"] == "yes" for r in rows)
+    _, xyz = read_atoms(out)
+    _, ref = read_atoms(MINIMAL / "expected" / "torsion-fix-resolved" / "LCC_no_sc_no_Hy.pdb")
+    assert np.abs(xyz - ref).max() < TOL
+
+
 def test_missing_chlorophyll_template_is_an_error(tmp_path):
     names = ("tleap.in", "leap.log", "LCC_input.pdb", "LCC_no_sc.pdb", "CLA.mol2")   # no CHL.mol2
     tleap_in, leap_log = copy_example(tmp_path, names)

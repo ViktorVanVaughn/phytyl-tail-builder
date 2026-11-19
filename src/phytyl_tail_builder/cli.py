@@ -8,7 +8,7 @@ from . import __version__
 from .main import BUILDERS, build
 from .optimizer import POTENTIALS
 from .pdb import read_residues
-from .stereo import REPORT_COLUMNS, RESNAMES, report_rows
+from .stereo import REPORT_COLUMNS, has_phytyl, report_rows
 
 STEREO_FAILED = 3
 
@@ -89,8 +89,9 @@ def check_main(argv=None):
                     "2 if the PDB cannot be read or has none of the residues.",
     )
     parser.add_argument('pdb')
-    parser.add_argument('--resnames', nargs='+', default=list(RESNAMES),
-                        help='residue names to check (default: CLA CHL)')
+    parser.add_argument('--resnames', nargs='+', default=None,
+                        help='residue names to check (default: every residue with a phytyl ester, '
+                             'atoms CGA and O2A/C1-C20 as in CLA, CHL, BCL, PHO)')
     parser.add_argument('--version', action='version', version=f'%(prog)s {__version__}')
     args = parser.parse_args(argv)
 
@@ -99,9 +100,11 @@ def check_main(argv=None):
     except (OSError, ValueError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
-    indices = [i for i, r in enumerate(residues) if r['name'] in args.resnames]
+    indices = [i for i, r in enumerate(residues)
+               if (r['name'] in args.resnames if args.resnames else has_phytyl(r['atoms']))]
     if not indices:
-        print(f"error: no {' or '.join(args.resnames)} residue in {args.pdb}", file=sys.stderr)
+        wanted = " or ".join(args.resnames) if args.resnames else "phytyl"
+        print(f"error: no {wanted} residue in {args.pdb}", file=sys.stderr)
         return 2
     rows = report_rows(residues, indices)
     print("\t".join(REPORT_COLUMNS))
