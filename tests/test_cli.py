@@ -35,15 +35,19 @@ def test_missing_input_returns_1(tmp_path):
                  "--leap-log", str(tmp_path / "leap.log")]) == 1
 
 
-def test_run_on_minimal_example(tmp_path):
-    result = subprocess.run(
-        [sys.executable, "-m", "phytyl_tail_builder.cli",
-         "--tleap-in", "tleap.in", "--leap-log", "leap.log", "-o", str(tmp_path)],
+def run_cli(tmp_path, *options, module="phytyl_tail_builder.cli"):
+    return subprocess.run(
+        [sys.executable, "-m", module, "--tleap-in", "tleap.in", "--leap-log", "leap.log",
+         "-o", str(tmp_path), *options],
         cwd=MINIMAL, capture_output=True, text=True,
     )
+
+
+def test_run_on_minimal_example(tmp_path):
+    result = run_cli(tmp_path)
     assert result.returncode == 0, result.stderr
     assert (tmp_path / "LCC_no_sc_no_Hy.pdb").exists()
-    assert result.stdout.count("Average clash score") == 3
+    assert result.stdout.count("Average clash score") == 12
 
 
 def test_unknown_potential_choice():

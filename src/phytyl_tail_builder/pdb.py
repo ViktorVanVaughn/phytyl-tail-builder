@@ -1,4 +1,9 @@
-"""Reading and writing PDB files."""
+"""Reading and writing PDB files.
+
+Residues are identified by their position in the file (0-based index over
+contiguous ATOM/HETATM records), never by resSeq, which wraps above 9999 and
+is not unique across chains.
+"""
 
 import re
 
@@ -11,64 +16,95 @@ def _is_atom(line):
     return line.startswith('ATOM') or line.startswith('HETATM')
 
 
-def _atom_key(line):
-    return int(line[22:26].strip()), line[12:16].strip().replace(" ", "")
+def _atom_name(line):
+    return line[12:16].strip().replace(" ", "")
 
 
-def extract_all_atom_coords(pdb_path):
-    """Return {residue_number: [(x, y, z), ...]} in file order."""
-    coords = {}
+def residue_indices(lines):
+    """Yield (residue_index, line); residue_index is None for non-atom lines.
+
+    A new residue starts when resName, chainID, resSeq or iCode changes, or
+    after a TER record.
+    """
+    index, key = -1, None
+    for line in lines:
+        if _is_atom(line):
+            if line[17:27] != key:
+                index += 1
+                key = line[17:27]
+            yield index, line
+        else:
+            if line.startswith('TER'):
+                key = None
+            yield None, line
+
+
+def read_residues(pdb_path):
+    """Return a list of residues in file order.
+
+    Each residue is a dict with 'name', 'resseq' (as written), 'chain' and
+    'atoms' ({atom_name: np.array([x, y, z])}).
+    """
+    residues = []
     with open(pdb_path) as f:
-        for line in f:
-            if _is_atom(line):
-                resnum = int(line[22:26].strip())
-                xyz = tuple(float(x) for x in line[30:54].split())
-                coords.setdefault(resnum, []).append(xyz)
-    return coords
+        for index, line in residue_indices(f):
+            if index is None:
+                continue
+            if index == len(residues):
+                residues.append({'name': line[17:20].strip(), 'resseq': line[22:26].strip(),
+                                 'chain': line[21].strip(), 'atoms': {}})
+            xyz = np.array([float(line[30:38]), float(line[38:46]), float(line[46:54])])
+            residues[index]['atoms'][_atom_name(line)] = xyz
+    return residues
 
 
 def extract_all_coordinates(pdb_path):
-    """Return {residue_number: {atom_name: np.array([x, y, z])}}."""
-    coords = {}
-    with open(pdb_path) as f:
-        for line in f:
-            if _is_atom(line):
-                res_num, atom_name = _atom_key(line)
-                xyz = np.array([float(line[30:38]), float(line[38:46]), float(line[46:54])])
-                coords.setdefault(res_num, {})[atom_name] = xyz
-    return coords
+    """Return {residue_index: {atom_name: np.array([x, y, z])}}."""
+    return {i: res['atoms'] for i, res in enumerate(read_residues(pdb_path))}
 
 
-def correct_residue_numbering(pre_pdb_path, post_pdb_path, leap_log_resnames):
-    """Find the post-LEaP number of each rebuilt residue by matching coordinates.
+def residue_label(residue):
+    return f"{residue['name']} {residue['resseq']}"
 
-    A post-LEaP residue matches when it contains every pre-LEaP coordinate of
-    the residue. Returns (leap_log_resnames, {post_number: residue_name}).
+
+def map_residues(pre_residues, post_residues, leap_residues):
+    """Map leap.log residue numbers to residue indices of the savepdb file.
+
+    tleap numbers residues sequentially, starting from the resSeq of the first
+    residue of the loadpdb file. Every mapped residue must have the same name
+    in leap.log, the loadpdb file and the savepdb file, and every atom of the
+    loadpdb residue must sit at the same coordinates in the savepdb residue.
+    Raises ValueError on any mismatch. Returns {leap_number: residue_index}.
     """
-    pre_coords = extract_all_atom_coords(pre_pdb_path)
-    post_coords = extract_all_atom_coords(post_pdb_path)
-
-    corrected = {}
-    for resnum, resname in leap_log_resnames.items():
-        if resnum in pre_coords:
-            pre_res_coords = pre_coords[resnum]
-            for post_resnum, post_res_coords in post_coords.items():
-                if all(c in post_res_coords for c in pre_res_coords):
-                    corrected[post_resnum] = resname
-                    break
-
-    return leap_log_resnames, corrected
+    if not pre_residues:
+        raise ValueError("loadpdb file has no atoms")
+    first = int(pre_residues[0]['resseq'])
+    mapping = {}
+    for number, name in leap_residues.items():
+        index = number - first
+        where = f"leap.log residue {name} {number} (residue #{index + 1} of the loadpdb file)"
+        if not 0 <= index < min(len(pre_residues), len(post_residues)):
+            raise ValueError(f"{where} is outside the loadpdb/savepdb files "
+                             f"({len(pre_residues)}/{len(post_residues)} residues)")
+        pre, post = pre_residues[index], post_residues[index]
+        if pre['name'] != name or post['name'] != name:
+            raise ValueError(f"{where}: loadpdb has {residue_label(pre)}, "
+                             f"savepdb has {residue_label(post)}")
+        post_xyz = {tuple(np.round(xyz, 3)) for xyz in post['atoms'].values()}
+        moved = [atom for atom, xyz in pre['atoms'].items() if tuple(np.round(xyz, 3)) not in post_xyz]
+        if moved:
+            raise ValueError(f"{where}: atoms {', '.join(moved)} of {residue_label(pre)} are not "
+                             f"at the same coordinates in savepdb residue {residue_label(post)}")
+        mapping[number] = index
+    return mapping
 
 
 def remove_hydrogens_from_rebuilt(input_pdb_path, output_pdb_path, residues_to_strip):
-    """Copy a PDB, dropping hydrogens of the given residue numbers."""
+    """Copy a PDB, dropping hydrogens of the given residue indices."""
     with open(input_pdb_path) as infile, open(output_pdb_path, 'w') as outfile:
-        for line in infile:
-            if _is_atom(line):
-                res_num_str = line[22:26].strip()
-                res_num = int(res_num_str) if res_num_str else None
-                if res_num in residues_to_strip and HYDROGEN.match(line[12:16].strip()):
-                    continue
+        for index, line in residue_indices(infile):
+            if index in residues_to_strip and HYDROGEN.match(line[12:16].strip()):
+                continue
             outfile.write(line)
 
 
@@ -80,15 +116,13 @@ def format_coordinate(position):
 def write_coordinates(pdb_path, updates):
     """Rewrite pdb_path in place with new positions.
 
-    updates maps (residue_number, atom_name) to a position; every matching
-    ATOM/HETATM line is changed.
+    updates maps (residue_index, atom_name) to a position.
     """
     with open(pdb_path) as f:
         lines = f.readlines()
     with open(pdb_path, 'w') as f:
-        for line in lines:
-            if _is_atom(line):
-                key = _atom_key(line)
-                if key in updates:
-                    line = f"{line[:30]}{format_coordinate(updates[key])}{line[54:]}"
+        for index, line in residue_indices(lines):
+            key = (index, _atom_name(line))
+            if index is not None and key in updates:
+                line = f"{line[:30]}{format_coordinate(updates[key])}{line[54:]}"
             f.write(line)

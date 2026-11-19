@@ -37,8 +37,9 @@ def main(argv=None):
                         format='%(levelname)s: %(message)s')
     try:
         output = build(args.tleap_in, args.leap_log, args.templates, args.output_prefix,
-                       args.tail_potential, args.environment_potential,
-                       args.keep_tleap_positions)
+                       fragment_potential=args.tail_potential,
+                       environment_potential=args.environment_potential,
+                       keep_initial_positions=args.keep_tleap_positions)
     except (OSError, ValueError) as e:
         logging.error("%s", e)
         return 1
