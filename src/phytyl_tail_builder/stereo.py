@@ -3,7 +3,8 @@
 Natural phytyl is (2E,7R,11R): phytyl C7 and C11 are template atoms C8 and
 C13, and the double bond is C2=C3 (E means C1-C2-C3-C5 near 180 degrees).
 R is not hard-coded: it is the sign of the signed volume in REFERENCE, the
-tail of examples/minimal/CLA.mol2, whose CIP labels are (2E,7R,11R).
+tail of examples/minimal/CLA.mol2, whose CIP labels are (2E,7R,11R). Tail
+angles are judged against their values in REFERENCE too.
 """
 
 import numpy as np
@@ -20,7 +21,9 @@ RESNAMES = ("CLA", "CHL")   # the Amber residues with a phytyl tail
 # Stereocentre -> its heavy substituents (chain towards C1, methyl, chain away).
 CENTRES = {"C8": ("C7", "C9", "C10"), "C13": ("C12", "C14", "C15")}
 EZ_DIHEDRAL = ("C1", "C2", "C3", "C5")
-ANGLE_RANGE = (100.0, 130.0)
+# A tail angle fails more than ANGLE_TOLERANCE degrees from its value in natural phytyl (REFERENCE): thermal
+# motion at 300 K spreads tail angles by about 4 degrees, while a misplaced atom gives 160-180 degrees.
+ANGLE_TOLERANCE = 20.0
 BOND_TOLERANCE = 0.1
 # A tetrahedral tail centre has |signed volume| near 2.5 A^3. Below this its three substituents are coplanar
 # with it (to under a degree), and the sign only reflects rounding of the coordinates.
@@ -97,9 +100,10 @@ def check_residue(coords_by_name):
       C8, C13         'R', 'S' or None (atom missing / planar)
       C2=C3           'E', 'Z', 'twisted' or None (see ez_label)
       dihedral        C1-C2-C3-C5 in degrees, or None
-      bad_angles      [(a, b, c, degrees)] heavy-atom tail angles outside 100-130
+      bad_angles      [(a, b, c, degrees, deviation)] heavy-atom tail angles more than
+                      ANGLE_TOLERANCE from their value in REFERENCE
       bad_bonds       [(a, b, length, reference)] tail bonds off REFERENCE by > 0.1 Å
-      worst_angle     (a, b, c, degrees) furthest outside 100-130 (or the largest), or None
+      worst_angle     (a, b, c, degrees, deviation) furthest from REFERENCE, or None
     """
     coords = coords_by_name
     result = {centre: centre_label(coords, centre) for centre in CENTRES}
@@ -115,10 +119,10 @@ def check_residue(coords_by_name):
             continue
         for i, a in enumerate(neighbours):
             for c in neighbours[i + 1:]:
-                angles.append((a, b, c, angle(coords[a], coords[b], coords[c])))
-    lo, hi = ANGLE_RANGE
-    result["bad_angles"] = [x for x in angles if not lo <= x[3] <= hi]
-    result["worst_angle"] = max(angles, key=lambda x: max(lo - x[3], x[3] - hi), default=None)
+                value = angle(coords[a], coords[b], coords[c])
+                angles.append((a, b, c, value, value - angle(REFERENCE[a], REFERENCE[b], REFERENCE[c])))
+    result["bad_angles"] = [x for x in angles if abs(x[4]) > ANGLE_TOLERANCE]
+    result["worst_angle"] = max(angles, key=lambda x: abs(x[4]), default=None)
 
     result["bad_bonds"] = []
     for a, b in TAIL_BONDS:
@@ -131,15 +135,15 @@ def check_residue(coords_by_name):
 
 
 def is_ok(result):
-    """Gate: (R, R, E) and no tail angle above 130 degrees."""
+    """Gate: (R, R, E) and every tail angle within ANGLE_TOLERANCE of natural phytyl."""
     return (result["C8"] == "R" and result["C13"] == "R" and result["C2=C3"] == "E"
             and not has_errors(result))
 
 
 def has_errors(result):
-    """Anything wrong among what can be determined: S, not E, or any tail angle above 130 degrees."""
+    """Anything wrong among what can be determined: S, not E, or a tail angle off natural phytyl."""
     return ("S" in (result["C8"], result["C13"]) or result["C2=C3"] not in (None, "E")
-            or any(a[3] > ANGLE_RANGE[1] for a in result["bad_angles"]))
+            or bool(result["bad_angles"]))
 
 
 def _is_heavy(name):

@@ -10,6 +10,7 @@ from phytyl_tail_builder.stereo import (
     CENTRES,
     R_SIGN,
     REFERENCE,
+    angle,
     check_residue,
     chirality,
     dihedral,
@@ -84,11 +85,26 @@ def test_check_residue_flags_angles_bonds_and_z():
     assert not is_ok(result)
 
 
-def test_an_angle_above_130_fails_behind_a_worse_small_one():
-    """worst_angle is the angle furthest outside 100-130; a 140 next to a 64 must still fail."""
-    result = {"C8": "R", "C13": "R", "C2=C3": "E", "worst_angle": ("C19", "C18", "C20", 64.0),
-              "bad_angles": [("C17", "C18", "C20", 140.0), ("C19", "C18", "C20", 64.0)]}
-    assert has_errors(result) and not is_ok(result)
+def bend(coords, a, b, c, degrees):
+    """Move the end atom a, in the plane of a-b-c, so that the angle a-b-c is `degrees`."""
+    u = (coords[c] - coords[b]) / np.linalg.norm(coords[c] - coords[b])
+    v = coords[a] - coords[b]
+    w = v - (v @ u) * u
+    w /= np.linalg.norm(w)
+    t = np.radians(degrees)
+    return dict(coords, **{a: coords[b] + np.linalg.norm(v) * (np.cos(t) * u + np.sin(t) * w)})
+
+
+def test_angles_are_judged_against_natural_phytyl():
+    """12 degrees off at the sp2 C3 is thermal motion and passes (the fixed 130 limit failed it);
+    30 degrees off at the sp3 C18 fails, whatever other angle is further off."""
+    c4 = angle(REFERENCE["C2"], REFERENCE["C3"], REFERENCE["C4"])
+    warm = check_residue(bend(REFERENCE, "C4", "C3", "C2", c4 + 12))
+    assert warm["bad_angles"] == [] and is_ok(warm)
+    c20 = angle(REFERENCE["C17"], REFERENCE["C18"], REFERENCE["C20"])
+    hot = check_residue(bend(REFERENCE, "C20", "C18", "C17", c20 + 30))
+    assert ("C17", "C18", "C20") in [a[:3] for a in hot["bad_angles"]]
+    assert has_errors(hot) and not is_ok(hot)
 
 
 def test_review_findings_on_v010_output():
@@ -118,7 +134,7 @@ def test_report_rows_mark_incomplete_tails():
 
 
 def test_example_output_is_natural_phytyl(tmp_path):
-    """Every rebuilt tail of the example is (2E,7R,11R) with no tail angle above 130 degrees."""
+    """Every rebuilt tail of the example is (2E,7R,11R) with every tail angle near natural phytyl."""
     out, rows = build(MINIMAL / "tleap.in", MINIMAL / "leap.log", output_prefix=tmp_path,
                       fix_resolved_stereo=True)
     residues = read_residues(out)
