@@ -50,13 +50,20 @@ def test_run_on_minimal_example(tmp_path):
     assert result.stdout.count("Average clash score") == 12
     report = (tmp_path / "stereo_report.tsv").read_text().splitlines()
     assert len(report) == 13
+    rows = [line.split("\t") for line in report[1:]]
+    assert [r[1] for r in rows if r[10] != "yes"] == ["440", "666"]
 
 
-def test_stereo_gate_fails(tmp_path):
+def test_stereo_gate_fails_on_resolved_inversions(tmp_path):
     result = run_cli(tmp_path)
     assert result.returncode == 3
-    assert "stereo check failed for" in result.stderr
+    assert "stereo check failed for CHL 440, CHL 666" in result.stderr
     assert "CHL 440: resolved atoms have C8 = S; kept as in the input" in result.stderr
+    assert run_cli(tmp_path, "--allow-stereo-errors").returncode == 0
+
+
+def test_sphere_builder_fails_the_gate(tmp_path):
+    assert run_cli(tmp_path, "--builder", "sphere").returncode == 3
 
 
 def test_unknown_potential_choice():

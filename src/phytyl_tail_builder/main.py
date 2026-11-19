@@ -3,7 +3,7 @@
 import logging
 from pathlib import Path
 
-from .mol2 import build_order, read_mol2
+from .mol2 import build_order, neighbours, read_mol2
 from .optimizer import POTENTIALS, build_sphere
 from .parser import parse_leap_log_for_atoms, parse_tleap_in
 from .pdb import (
@@ -15,18 +15,27 @@ from .pdb import (
     write_coordinates,
 )
 from .stereo import check_residue, report_rows, write_report
+from .torsion import build_torsion
 
 logger = logging.getLogger(__name__)
 
+BUILDERS = ("torsion", "sphere")
+
 
 def build(tleap_in_path, leap_log_path, templates_dir=None, output_prefix=".",
-          fragment_potential="lj", environment_potential="mie", keep_initial_positions=False):
+          fragment_potential="lj", environment_potential="mie", keep_initial_positions=False,
+          builder="torsion", beam=5, dihedral_step=10.0, passes=2):
     """Rebuild tail positions, write <savepdb name>_no_Hy.pdb and stereo_report.tsv.
 
     tleap_in_path  tleap script with loadpdb (before LEaP) and savepdb (after LEaP)
     leap_log_path  leap.log of that run (only its last session is read)
     templates_dir  folder with <RESNAME>.mol2 files (default: folder of tleap_in_path)
     output_prefix  output folder
+    builder        "torsion" (template geometry, scanned dihedrals) or "sphere" (v0.1 algorithm)
+    beam, dihedral_step
+                   beam width and dihedral grid step (degrees) of the torsion builder
+    passes         torsion builder: 1 builds each residue once, in order; every further pass
+                   rebuilds each tail with all the other tails in place
     fragment_potential, environment_potential, keep_initial_positions
                    see optimizer.count_clashes_for_segment and build_sphere
 
@@ -36,6 +45,10 @@ def build(tleap_in_path, leap_log_path, templates_dir=None, output_prefix=".",
     for name in (fragment_potential, environment_potential):
         if name not in POTENTIALS:
             raise ValueError(f"potential must be one of {POTENTIALS}, got {name!r}")
+    if builder not in BUILDERS:
+        raise ValueError(f"builder must be one of {BUILDERS}, got {builder!r}")
+    if passes < 1:
+        raise ValueError("passes must be at least 1")
 
     tleap_in_path = Path(tleap_in_path)
     leap_log_path = Path(leap_log_path)
@@ -98,19 +111,28 @@ def build(tleap_in_path, leap_log_path, templates_dir=None, output_prefix=".",
             logger.warning("%s: resolved atoms have %s; kept as in the input",
                            residue_label(post_residues[res]), ", ".join(wrong.values()))
 
-    # Residues are built one by one, each without the tails still to come.
+    # Pass 1 builds the residues one by one, each without the tails still to come.
+    # Later passes (torsion builder) rebuild every tail with all the others in place.
     excluded = {(res, atom) for res, atoms in missing.items() for atom in atoms}
     updates = {}
-    for res in sorted(missing, key=lambda r: len(missing[r])):
-        template, bonds = templates[post_residues[res]['name']]
-        present = [a for a in coordinates[res] if a not in missing[res] and a in template]
-        order = build_order(bonds, missing[res], present)
-        excluded -= {(res, atom) for atom in missing[res]}
-        placed, score = build_sphere(coordinates, res, order, excluded, fragment_potential,
-                                     environment_potential, keep_initial_positions)
-        updates.update({(res, atom): xyz for atom, xyz in placed.items()})
-        print(f"Residue {residue_label(post_residues[res])}: "
-              f"Average clash score per atom = {score / len(placed):.2f}")
+    passes = passes if builder == "torsion" else 1
+    for n in range(1, passes + 1):
+        for res in sorted(missing, key=lambda r: len(missing[r])):
+            template, bonds = templates[post_residues[res]['name']]
+            present = [a for a in coordinates[res] if a not in missing[res] and a in template]
+            order = build_order(bonds, missing[res], present)
+            excluded -= {(res, atom) for atom in missing[res]}
+            options = dict(fragment_potential=fragment_potential, environment_potential=environment_potential,
+                           keep_initial_positions=keep_initial_positions and n == 1)
+            if builder == "sphere":
+                placed, score = build_sphere(coordinates, res, order, excluded, **options)
+            else:
+                placed, score = build_torsion(coordinates, res, order, template, neighbours(bonds), excluded,
+                                              beam=beam, dihedral_step=dihedral_step, **options)
+            updates.update({(res, atom): xyz for atom, xyz in placed.items()})
+            if n == passes:
+                print(f"Residue {residue_label(post_residues[res])}: "
+                      f"Average clash score per atom = {score / len(placed):.2f}")
 
     write_coordinates(str(no_h_pdb), updates)
     logger.info("Wrote %s", no_h_pdb)

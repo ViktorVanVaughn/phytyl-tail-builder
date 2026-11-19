@@ -200,3 +200,7 @@ def test_fragment_neighbours_use_lennard_jones():
     lj_score = count_clashes_for_segment(trial, tree, labels, 3.4, fragment={(1, "A")})
     assert mie_score != lj_score
     assert count_clashes_for_segment(trial, tree, labels, 3.4, fragment={(2, "A")}) == mie_score
+    # An atom given in `extra` scores like a fragment atom in the tree.
+    empty_tree, empty_labels, _ = build_kdtree({1: {"B": points[1]}})
+    assert count_clashes_for_segment(trial, empty_tree, empty_labels, 3.4,
+                                     extra={(1, "A"): points[0]}) == pytest.approx(lj_score)

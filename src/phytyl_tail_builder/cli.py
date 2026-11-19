@@ -5,7 +5,7 @@ import logging
 import sys
 
 from . import __version__
-from .main import build
+from .main import BUILDERS, build
 from .optimizer import POTENTIALS
 from .pdb import read_residues
 from .stereo import REPORT_COLUMNS, report_rows
@@ -24,6 +24,17 @@ def main(argv=None):
                         help='folder with <RESNAME>.mol2 templates (default: folder of --tleap-in)')
     parser.add_argument('-o', '--output-prefix', default='.',
                         help='output folder (default: current directory)')
+    parser.add_argument('--builder', choices=BUILDERS, default='torsion',
+                        help="torsion: template bond lengths and angles, branches and C2=C3 fixed "
+                             "so the tail is (2E,7R,11R), backbone dihedrals scanned; "
+                             "sphere: the v0.1 direction search, with the v0.2 fixes (default: torsion)")
+    parser.add_argument('--beam', type=int, default=5,
+                        help='torsion builder: partial tails kept at each dihedral (default: 5)')
+    parser.add_argument('--dihedral-step', type=float, default=10.0,
+                        help='torsion builder: dihedral grid step in degrees (default: 10)')
+    parser.add_argument('--passes', type=int, default=2,
+                        help="torsion builder: 1 builds each tail once, in order; each further pass "
+                             "rebuilds every tail with all the other tails in place (default: 2)")
     parser.add_argument('--allow-stereo-errors', action='store_true',
                         help=f"only warn when a rebuilt tail fails the stereo check "
                              f"(default: exit with status {STEREO_FAILED})")
@@ -46,7 +57,8 @@ def main(argv=None):
         output, rows = build(args.tleap_in, args.leap_log, args.templates, args.output_prefix,
                              fragment_potential=args.tail_potential,
                              environment_potential=args.environment_potential,
-                             keep_initial_positions=args.keep_tleap_positions)
+                             keep_initial_positions=args.keep_tleap_positions, builder=args.builder,
+                             beam=args.beam, dihedral_step=args.dihedral_step, passes=args.passes)
     except (OSError, ValueError) as e:
         logging.error("%s", e)
         return 1

@@ -40,11 +40,12 @@ def build_kdtree(coordinates, exclude_atoms=None):
 
 
 def count_clashes_for_segment(new_positions, kdtree, labels, base_distance_threshold, fragment=None,
-                              fragment_potential="lj", environment_potential="mie"):
-    """Clash score of trial positions against the atoms in kdtree.
+                              fragment_potential="lj", environment_potential="mie", extra=None):
+    """Clash score of trial positions against the atoms in kdtree (and in extra).
 
     new_positions is {atom_name: xyz}. Neighbours whose label is in `fragment`
-    (a set of (residue, atom_name)) are scored with `fragment_potential`, all
+    (a set of (residue, atom_name)), and every atom of `extra`
+    ({(residue, atom_name): xyz}), are scored with `fragment_potential`, all
     others with `environment_potential`; each is "lj" (Lennard-Jones 12-6) or
     "mie" (Mie 16-6), with sigma = mean of the two element sigmas (SIGMA).
     Each term is weighted by cutoff / distance, and the cutoff grows with the
@@ -54,6 +55,9 @@ def count_clashes_for_segment(new_positions, kdtree, labels, base_distance_thres
         if name not in POTENTIALS:
             raise ValueError(f"potential must be one of {POTENTIALS}, got {name!r}")
     fragment = fragment or ()
+    extra = extra or {}
+    extra_labels = list(extra)
+    extra_points = np.array([extra[k] for k in extra_labels]).reshape(-1, 3)
     clash_score = 0.0
     epsilon = 0.36
     mie_n = 16
@@ -70,11 +74,14 @@ def count_clashes_for_segment(new_positions, kdtree, labels, base_distance_thres
 
     for atom_name, position in new_positions.items():
         sigma_i = sigma_of(atom_name)
+        extra_distances = np.linalg.norm(extra_points - position, axis=1)
         nearby = len(kdtree.query_ball_point(position, base_distance_threshold))
+        nearby += int((extra_distances < base_distance_threshold).sum())
         threshold = base_distance_threshold * (1 + nearby / base_distance_threshold ** 3)
 
         neighbours = [(np.linalg.norm(position - kdtree.data[idx]), labels[idx], labels[idx] in fragment)
                       for idx in kdtree.query_ball_point(position, threshold)]
+        neighbours += [(d, label, True) for d, label in zip(extra_distances, extra_labels) if d < threshold]
         for distance, label, in_fragment in neighbours:
             if distance < threshold:
                 sigma = (sigma_i + sigma_of(label[1])) / 2

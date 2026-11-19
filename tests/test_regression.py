@@ -40,8 +40,9 @@ def run(tmp_path, name, **options):
 # full-system leap.log of v0.1.0, no stereo control); they are kept unchanged for reference
 # and for tests/test_stereo.py.
 @pytest.mark.parametrize("name,options", [
-    ("sphere", {}),
-    ("sphere-all-mie", {"fragment_potential": "mie", "environment_potential": "mie",
+    ("torsion", {}),
+    ("sphere", {"builder": "sphere"}),
+    ("sphere-all-mie", {"builder": "sphere", "fragment_potential": "mie", "environment_potential": "mie",
                         "keep_initial_positions": True}),
 ])
 def test_golden_output(tmp_path, name, options):
@@ -55,19 +56,25 @@ def test_golden_output(tmp_path, name, options):
 def test_other_combinations_run(tmp_path, fragment, environment):
     out = run(tmp_path, "x", fragment_potential=fragment, environment_potential=environment)
     labels, xyz = read_atoms(out)
-    ref_labels, _ = read_atoms(MINIMAL / "expected" / "sphere" / "LCC_no_sc_no_Hy.pdb")
+    ref_labels, _ = read_atoms(MINIMAL / "expected" / "torsion" / "LCC_no_sc_no_Hy.pdb")
     assert labels == ref_labels and np.isfinite(xyz).all()
 
 
-def test_potentials_change_the_result(tmp_path):
-    _, a = read_atoms(run(tmp_path, "a"))
-    _, b = read_atoms(run(tmp_path, "b", fragment_potential="mie"))
+@pytest.mark.parametrize("builder", ["torsion", "sphere"])
+def test_potentials_change_the_result(tmp_path, builder):
+    _, a = read_atoms(run(tmp_path, "a", builder=builder))
+    _, b = read_atoms(run(tmp_path, "b", builder=builder, fragment_potential="mie"))
     assert np.linalg.norm(a - b, axis=1).max() > 0.1
 
 
 def test_unknown_potential_is_rejected(tmp_path):
     with pytest.raises(ValueError):
         run(tmp_path, "u", fragment_potential="morse")
+
+
+def test_passes_must_be_positive(tmp_path):
+    with pytest.raises(ValueError):
+        run(tmp_path, "p", passes=0)
 
 
 def test_minimal_example_moves_only_tail_atoms(tmp_path):
