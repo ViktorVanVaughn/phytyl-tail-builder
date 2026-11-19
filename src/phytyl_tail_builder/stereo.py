@@ -21,6 +21,9 @@ CENTRES = {"C8": ("C7", "C9", "C10"), "C13": ("C12", "C14", "C15")}
 EZ_DIHEDRAL = ("C1", "C2", "C3", "C5")
 ANGLE_RANGE = (100.0, 130.0)
 BOND_TOLERANCE = 0.1
+# A tetrahedral tail centre has |signed volume| near 2.5 A^3. Below this its three substituents are coplanar
+# with it (to under a degree), and the sign only reflects rounding of the coordinates.
+PLANAR_VOLUME = 0.05
 
 # Tail of examples/minimal/CLA.mol2, (2E,7R,11R) by CIP (checked with RDKit).
 REFERENCE = {name: np.array(xyz) for name, xyz in {
@@ -36,9 +39,10 @@ REFERENCE = {name: np.array(xyz) for name, xyz in {
 
 
 def chirality(coords, center, a, b, c):
-    """Sign (+1, -1, or 0 if planar) of dot(a - center, cross(b - center, c - center))."""
+    """Sign of dot(a - center, cross(b - center, c - center)): +1, -1, or 0 below PLANAR_VOLUME (planar)."""
     o = coords[center]
-    return int(np.sign(np.dot(coords[a] - o, np.cross(coords[b] - o, coords[c] - o))))
+    volume = float(np.dot(coords[a] - o, np.cross(coords[b] - o, coords[c] - o)))
+    return 0 if abs(volume) < PLANAR_VOLUME else int(np.sign(volume))
 
 
 def dihedral(p1, p2, p3, p4):

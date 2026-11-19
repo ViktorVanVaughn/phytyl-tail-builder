@@ -51,6 +51,17 @@ def test_mirror_image_inverts_both_centres():
     assert (result["C8"], result["C13"], result["C2=C3"]) == ("S", "S", "E")
 
 
+def test_planar_centre_has_no_label():
+    """A centre coplanar with its substituents gets None, however its coordinates are rounded."""
+    coords = dict(REFERENCE)
+    c8, c7 = REFERENCE["C8"], REFERENCE["C7"]
+    coords["C10"] = c8 + (c8 - c7)                              # C7-C8-C10 collinear: volume 0
+    for shift in (0.0, 1e-3, -1e-3):
+        coords["C9"] = REFERENCE["C9"] + shift
+        assert check_residue(coords)["C8"] is None
+    assert check_residue(REFERENCE)["C8"] == "R"
+
+
 def test_dihedral():
     p = [np.array(v, float) for v in ([1, 0, 0], [0, 0, 0], [0, 0, 1], [0, 1, 1])]
     assert dihedral(*p) == pytest.approx(90.0)
