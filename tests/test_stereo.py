@@ -13,6 +13,7 @@ from phytyl_tail_builder.stereo import (
     check_residue,
     chirality,
     dihedral,
+    has_errors,
     is_ok,
     report_rows,
 )
@@ -81,6 +82,13 @@ def test_check_residue_flags_angles_bonds_and_z():
     assert result["worst_angle"][3] == pytest.approx(180.0)
     assert ("C18", "C20") in [b[:2] for b in result["bad_bonds"]]
     assert not is_ok(result)
+
+
+def test_an_angle_above_130_fails_behind_a_worse_small_one():
+    """worst_angle is the angle furthest outside 100-130; a 140 next to a 64 must still fail."""
+    result = {"C8": "R", "C13": "R", "C2=C3": "E", "worst_angle": ("C19", "C18", "C20", 64.0),
+              "bad_angles": [("C17", "C18", "C20", 140.0), ("C19", "C18", "C20", 64.0)]}
+    assert has_errors(result) and not is_ok(result)
 
 
 def test_review_findings_on_v010_output():

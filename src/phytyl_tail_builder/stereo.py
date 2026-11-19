@@ -136,10 +136,9 @@ def is_ok(result):
 
 
 def has_errors(result):
-    """Anything wrong among what can be determined: S, not E, or an angle above 130 degrees."""
-    worst = result["worst_angle"]
+    """Anything wrong among what can be determined: S, not E, or any tail angle above 130 degrees."""
     return ("S" in (result["C8"], result["C13"]) or result["C2=C3"] not in (None, "E")
-            or (worst is not None and worst[3] > ANGLE_RANGE[1]))
+            or any(a[3] > ANGLE_RANGE[1] for a in result["bad_angles"]))
 
 
 def _is_heavy(name):
