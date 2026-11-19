@@ -8,6 +8,7 @@ import numpy as np
 import pytest
 
 from phytyl_tail_builder.main import build
+from phytyl_tail_builder.stereo import TAIL_ATOMS
 
 MINIMAL = Path(__file__).resolve().parent.parent / "examples" / "minimal"
 TOL = 1e-3
@@ -99,7 +100,22 @@ def test_minimal_example_moves_only_tail_atoms(tmp_path):
     before = dict(zip(*read_atoms(MINIMAL / "LCC_no_sc.pdb")))
     after = dict(zip(*read_atoms(out)))
     moved = [k for k in after if np.linalg.norm(after[k] - before[k]) > TOL]
-    assert moved and all(k[5:8] in ("CHL", "CLA") for k in moved)
+    assert moved and all(k[5:8] in ("CHL", "CLA") and k[:4].strip() in TAIL_ATOMS for k in moved)
+
+
+def copy_example(tmp_path, names=("tleap.in", "leap.log", "LCC_input.pdb", "LCC_no_sc.pdb", "CLA.mol2",
+                                  "CHL.mol2")):
+    for name in names:
+        shutil.copy(MINIMAL / name, tmp_path)
+    return tmp_path / "tleap.in", tmp_path / "leap.log"
+
+
+def test_leap_log_of_other_files_is_refused(tmp_path):
+    """leap.log residue 127 shifted to 128 (also a CHL) would overwrite the resolved atoms of CHL 666."""
+    tleap_in, leap_log = copy_example(tmp_path)
+    leap_log.write_text(leap_log.read_text().replace("<CHL 127>", "<CHL 128>"))
+    with pytest.raises(ValueError, match="already has C1"):
+        build(tleap_in, leap_log, output_prefix=tmp_path / "out")
 
 
 def test_resolved_atoms_are_kept_unless_discarded(tmp_path):

@@ -93,15 +93,20 @@ def build(tleap_in_path, leap_log_path, templates_dir=None, output_prefix=".",
         logger.warning("No template for %s in %s; their added atoms are left as placed by tleap",
                        ", ".join(skipped), templates_dir)
 
-    post_residues = read_residues(pdb_out)
-    mapping = map_residues(read_residues(pdb_in), post_residues,
+    pre_residues, post_residues = read_residues(pdb_in), read_residues(pdb_out)
+    mapping = map_residues(pre_residues, post_residues,
                            {num: name for num, name, _ in extracted_atoms if name in templates})
     missing = {}
     for num, _, atom in extracted_atoms:
         if num in mapping:
+            label = residue_label(post_residues[mapping[num]])
             if atom not in post_residues[mapping[num]]['atoms']:
                 raise ValueError(f"leap.log adds {atom} to residue {num}, but savepdb residue "
-                                 f"{residue_label(post_residues[mapping[num]])} has no {atom}")
+                                 f"{label} has no {atom}")
+            # an atom tleap added cannot be in its input: if it is, leap.log belongs to other files
+            if atom in pre_residues[mapping[num]]['atoms']:
+                raise ValueError(f"leap.log adds {atom} to residue {num}, but loadpdb residue "
+                                 f"{label} already has {atom}")
             missing.setdefault(mapping[num], []).append(atom)
     if not missing:
         logger.warning("No residues with a matching template")
