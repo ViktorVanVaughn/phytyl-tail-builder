@@ -41,9 +41,13 @@ def plan(order, template, graph, known):
     available = set(known)
     steps = []
     for atom, p in order:
-        g = next((n for n in graph[p] if n in available and n != atom), None)
-        d = next((n for n in graph.get(g, ()) if n in available and n != p), None) if g else None
-        if d is None:
+        # g: a known neighbour of the parent that has a known neighbour d of its own; the first
+        # neighbour in bond-list order can be a sibling with nothing behind it
+        for g in (n for n in graph[p] if n in available and n != atom):
+            d = next((n for n in graph.get(g, ()) if n in available and n != p), None)
+            if d is not None:
+                break
+        else:
             raise ValueError(f"cannot place {atom}: needs three bonded known atoms behind it")
         t = template
         step = {"atom": atom, "refs": (d, g, p), "bond": np.linalg.norm(t[atom] - t[p]),

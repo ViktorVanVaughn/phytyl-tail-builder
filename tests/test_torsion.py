@@ -80,3 +80,15 @@ def test_chain_atom_next_to_a_resolved_branch_goes_on_the_r_side():
     build_torsion(coords, 0, order, template, graph, excluded=set())
     result = check_residue(coords[0])
     assert (result["C8"], result["C13"]) == ("R", "R") and result["bad_angles"] == []
+
+
+@pytest.mark.parametrize("missing", [TAIL, TAIL[5:], TAIL[9:]])
+def test_template_bond_order_does_not_matter(missing):
+    """The same build from a CLA.mol2 whose bonds are listed backwards, each one reversed."""
+    template, bonds = read_mol2(MINIMAL / "CLA.mol2")
+    bonds = [(b, a) for a, b in reversed(bonds)]
+    coords = {0: {n: xyz.copy() for n, xyz in template.items()}}
+    order = build_order(bonds, missing, [n for n in template if n not in missing])
+    build_torsion(coords, 0, order, template, neighbours(bonds), excluded=set())
+    result = check_residue(coords[0])
+    assert (result["C8"], result["C13"], result["C2=C3"]) == ("R", "R", "E") and result["bad_angles"] == []
