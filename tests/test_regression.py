@@ -133,6 +133,13 @@ def test_resolved_atoms_are_kept_unless_discarded(tmp_path):
             assert np.allclose(by_name_res[key], xyz, atol=TOL), key
 
 
+def test_missing_chlorophyll_template_is_an_error(tmp_path):
+    names = ("tleap.in", "leap.log", "LCC_input.pdb", "LCC_no_sc.pdb", "CLA.mol2")   # no CHL.mol2
+    tleap_in, leap_log = copy_example(tmp_path, names)
+    with pytest.raises(ValueError, match="No template for CHL"):
+        build(tleap_in, leap_log, output_prefix=tmp_path / "out")
+
+
 @pytest.mark.skipif("PTB_FULL_DATA" not in os.environ,
                     reason="set PTB_FULL_DATA to the full data folder")
 def test_full_data(tmp_path):

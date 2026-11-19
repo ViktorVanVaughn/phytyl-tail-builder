@@ -8,7 +8,7 @@ from . import __version__
 from .main import BUILDERS, build
 from .optimizer import POTENTIALS
 from .pdb import read_residues
-from .stereo import REPORT_COLUMNS, report_rows
+from .stereo import REPORT_COLUMNS, RESNAMES, report_rows
 
 STEREO_FAILED = 3
 
@@ -84,10 +84,11 @@ def check_main(argv=None):
         prog="phytyl-tail-check",
         description="Report C8/C13 R/S, C2=C3 E/Z, closest contact and worst bond angle of every "
                     "phytyl tail in a PDB. Exit status 1 if any tail is not (R,R,E) or has a "
-                    "bond angle above 130 degrees; partial tails fail only on what can be determined.",
+                    "bond angle above 130 degrees (partial tails fail only on what can be determined), "
+                    "2 if the PDB cannot be read or has none of the residues.",
     )
     parser.add_argument('pdb')
-    parser.add_argument('--resnames', nargs='+', default=['CLA', 'CHL'],
+    parser.add_argument('--resnames', nargs='+', default=list(RESNAMES),
                         help='residue names to check (default: CLA CHL)')
     parser.add_argument('--version', action='version', version=f'%(prog)s {__version__}')
     args = parser.parse_args(argv)
@@ -97,7 +98,11 @@ def check_main(argv=None):
     except (OSError, ValueError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
-    rows = report_rows(residues, [i for i, r in enumerate(residues) if r['name'] in args.resnames])
+    indices = [i for i, r in enumerate(residues) if r['name'] in args.resnames]
+    if not indices:
+        print(f"error: no {' or '.join(args.resnames)} residue in {args.pdb}", file=sys.stderr)
+        return 2
+    rows = report_rows(residues, indices)
     print("\t".join(REPORT_COLUMNS))
     for row in rows:
         print("\t".join(str(row[c]) for c in REPORT_COLUMNS))

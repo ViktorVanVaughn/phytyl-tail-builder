@@ -14,7 +14,7 @@ from .pdb import (
     residue_label,
     write_coordinates,
 )
-from .stereo import TAIL_BONDS, check_residue, report_rows, write_report
+from .stereo import RESNAMES, TAIL_BONDS, check_residue, report_rows, write_report
 from .torsion import build_torsion
 
 logger = logging.getLogger(__name__)
@@ -89,6 +89,10 @@ def build(tleap_in_path, leap_log_path, templates_dir=None, output_prefix=".",
         if res_name not in templates and mol2_path.exists():
             templates[res_name] = read_mol2(mol2_path)
     skipped = sorted({name for _, name, _ in extracted_atoms} - set(templates))
+    unbuilt = [name for name in skipped if name in RESNAMES]
+    if unbuilt:
+        raise ValueError(f"No template for {', '.join(unbuilt)} in {templates_dir}: "
+                         f"their tails would stay where tleap placed them, unchecked")
     if skipped:
         logger.warning("No template for %s in %s; their added atoms are left as placed by tleap",
                        ", ".join(skipped), templates_dir)

@@ -88,6 +88,10 @@ def test_check_cli(capsys):
     assert check_main([str(MINIMAL / "LCC_input.pdb"), "--resnames", "CLA"]) == 0  # partial, nothing wrong
 
 
+def test_check_cli_with_nothing_to_check():
+    assert check_main([str(MINIMAL / "LCC_input.pdb"), "--resnames", "cla"]) == 2
+
+
 def test_check_cli_entry_point():
     result = subprocess.run(["phytyl-tail-check", "--help"], capture_output=True, text=True)
     assert result.returncode == 0 and "--resnames" in result.stdout

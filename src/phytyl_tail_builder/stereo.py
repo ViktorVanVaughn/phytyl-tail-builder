@@ -16,6 +16,7 @@ TAIL_BONDS = [
     ("C16", "C17"), ("C17", "C18"), ("C18", "C19"), ("C18", "C20"),
 ]
 TAIL_ATOMS = ["O2A"] + [f"C{i}" for i in range(1, 21)]
+RESNAMES = ("CLA", "CHL")   # the Amber residues with a phytyl tail
 # Stereocentre -> its heavy substituents (chain towards C1, methyl, chain away).
 CENTRES = {"C8": ("C7", "C9", "C10"), "C13": ("C12", "C14", "C15")}
 EZ_DIHEDRAL = ("C1", "C2", "C3", "C5")
