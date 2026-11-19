@@ -25,6 +25,9 @@ amber_check/
 !examples/minimal/CLA.mol2
 !examples/minimal/leap.log
 
+# written by the quick start in examples/minimal
+examples/minimal/stereo_report.tsv
+
 .vscode/
 .idea/
 *.swp

@@ -17,4 +17,4 @@ authors:
     affiliation: "Università di Pisa"
 repository-code: "https://github.com/ViktorVanVaughn/phytyl-tail-builder"
 license: MIT
-abstract: "Grid-based reconstruction of truncated chlorophyll phytyl tails for Amber (tleap) molecular dynamics set-up."
+abstract: "Reconstruction of truncated chlorophyll phytyl tails for Amber (tleap) molecular dynamics set-up: torsion-space building with natural (2E,7R,11R) stereochemistry, and a stereo check for any PDB."
