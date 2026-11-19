@@ -71,39 +71,15 @@ if [ ${#RESMAP[@]} -gt 0 ]; then
     sed -i -E '0,/^\s*\w+\s*=\s*loadpdb\s/I{s//addPdbResMap { '"$MAP"'}\n&/}' "$IN"
 fi
 
-# bond lines use the residue numbers of the original loadpdb file, while PDB
-# is numbered as written by savepdb. Map each original residue to the PDB
-# residue holding the coordinates of its first atom and renumber the bond lines.
-PRE=$(sed -nE 's#^\s*\w+\s*=\s*loadpdb\s+(\S+).*#\1#Ip' "$TLEAP_IN" | head -1)
-PRE="$(dirname "$TLEAP_IN")/$PRE"
-if [ -f "$PRE" ] && grep -qE '^\s*bond\s' "$IN"; then
-    python3 - "$PRE" "$PDB" "$IN" <<'PY'
-import re
-import sys
-
-pre, post, script = sys.argv[1:]
-
-def atoms(path):
-    for line in open(path):
-        if line.startswith(('ATOM', 'HETATM')):
-            yield int(line[22:26]), line[30:54]
-
-where = {xyz: res for res, xyz in atoms(post)}
-new_number = {}
-for res, xyz in atoms(pre):
-    new_number.setdefault(res, where.get(xyz))
-
-def renumber(m):
-    res = int(m.group(2))
-    if new_number.get(res) is None:
-        sys.exit(f"no match for residue {res} of {pre} in {post}")
-    return f"{m.group(1)}{new_number[res]}."
-
-lines = open(script).read().splitlines(True)
-lines = [re.sub(r'(\w+\.)(\d+)\.', renumber, l) if re.match(r'\s*bond\s', l) else l
-         for l in lines]
-open(script, 'w').writelines(lines)
-PY
+# bond lines number residues as tleap numbered the original loadpdb file (its
+# first resSeq plus the position); renumber_bonds.py rewrites them for PDB.
+PRE=$(sed -nE 's#^\s*\w+\s*=\s*loadpdb\s+(\S+).*#\1#Ip' "$TLEAP_IN" | tail -1)
+PRE=${PRE//\"/}
+PRE=${PRE//\'/}
+case $PRE in /*) ;; *) PRE="$(dirname "$TLEAP_IN")/$PRE" ;; esac
+if grep -qiE '^\s*bond\s' "$IN"; then
+    [ -f "$PRE" ] || { echo "bond lines need the loadpdb file of $TLEAP_IN: $PRE not found" >&2; exit 1; }
+    python3 "$(dirname "$0")/renumber_bonds.py" "$PRE" "$PDB" "$IN"
 fi
 
 cat >> "$IN" <<EOF
