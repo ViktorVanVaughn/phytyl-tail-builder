@@ -132,9 +132,11 @@ def build_torsion(coordinates, res, order, template, graph, excluded, fragment_p
             else:
                 trials = [(_place(step, xyz, step["dihedral"]), 0.0)]
             extra = {(res, n): v for n, v in placed.items()}
+            p = step["refs"][2]                                 # parent: 1-2 and 1-3 partners are not scored
+            bonded = {(res, p)} | {(res, n) for n in graph[p]}
             for position, stagger in trials:
-                s = count_clashes_for_segment({step["atom"]: position}, kdtree, labels, 3.4, anchors,
-                                              fragment_potential, environment_potential, extra)
+                s = count_clashes_for_segment({step["atom"]: position}, kdtree, labels, anchors,
+                                              fragment_potential, environment_potential, extra, bonded)
                 expanded.append((score + s, penalty + stagger, {**placed, step["atom"]: position}))
         states = expanded
 

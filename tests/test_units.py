@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from phytyl_tail_builder.mol2 import build_order, read_mol2
-from phytyl_tail_builder.optimizer import build_kdtree, count_clashes_for_segment, element_of
+from phytyl_tail_builder.optimizer import CUTOFF, build_kdtree, count_clashes_for_segment, element_of
 from phytyl_tail_builder.parser import leap_sessions, parse_leap_log_for_atoms, parse_tleap_in
 from phytyl_tail_builder.pdb import (
     extract_all_coordinates,
@@ -174,18 +174,30 @@ def test_write_coordinates_rounds_to_pdb_precision(tmp_path):
 def test_clash_score_grows_as_atoms_approach():
     coords = {1: {"A": np.array([0.0, 0.0, 0.0])}}
     tree, labels, _ = build_kdtree(coords)
-    near = count_clashes_for_segment({"X": np.array([2.0, 0, 0])}, tree, labels, 3.4)
-    far = count_clashes_for_segment({"X": np.array([3.3, 0, 0])}, tree, labels, 3.4)
-    alone = count_clashes_for_segment({"X": np.array([20.0, 0, 0])}, tree, labels, 3.4)
+    near = count_clashes_for_segment({"X": np.array([2.0, 0, 0])}, tree, labels)
+    far = count_clashes_for_segment({"X": np.array([3.3, 0, 0])}, tree, labels)
+    alone = count_clashes_for_segment({"X": np.array([20.0, 0, 0])}, tree, labels)
     assert near > far > alone == 0.0
+    # each pair is shifted to 0 at the cutoff, so crossing it changes nothing
+    edge = [count_clashes_for_segment({"X": np.array([CUTOFF + d, 0, 0])}, tree, labels)
+            for d in (-1e-6, 1e-6)]
+    assert abs(edge[0] - edge[1]) < 1e-6
 
 
 def test_attractive_trials_are_not_floored():
     # v0.1 clamped every score to >= 0.1, so all attractive trials tied and the first (+z) won.
     tree, labels, _ = build_kdtree({1: {"H1": np.array([0.0, 0.0, 0.0])}})  # C-H sigma 3.03 Å
-    a = count_clashes_for_segment({"C2": np.array([3.2, 0, 0])}, tree, labels, 3.4)
-    b = count_clashes_for_segment({"C2": np.array([3.35, 0, 0])}, tree, labels, 3.4)
+    a = count_clashes_for_segment({"C2": np.array([3.2, 0, 0])}, tree, labels)
+    b = count_clashes_for_segment({"C2": np.array([3.35, 0, 0])}, tree, labels)
     assert a < 0 and b < 0 and a != b
+
+
+def test_bonded_partners_are_not_scored():
+    """The parent (1-2) and the atoms on the parent (1-3) sit where bond length and angle put them."""
+    tree, labels, _ = build_kdtree({1: {"C1": np.array([0.0, 0, 0]), "C2": np.array([1.5, 0, 0])}})
+    trial = {"C3": np.array([2.3, 1.2, 0])}
+    assert count_clashes_for_segment(trial, tree, labels, bonded={(1, "C1"), (1, "C2")}) == 0.0
+    assert count_clashes_for_segment(trial, tree, labels) > 0
 
 
 def test_element_radii():
@@ -195,7 +207,7 @@ def test_element_radii():
     scores = {}
     for name in ("CA", "HA", "OB", "MG"):
         tree, labels, _ = build_kdtree({1: {name: np.array([0.0, 0.0, 0.0])}})
-        scores[name] = count_clashes_for_segment(trial, tree, labels, 3.4)
+        scores[name] = count_clashes_for_segment(trial, tree, labels)
     assert scores["CA"] > scores["OB"] > scores["HA"] > scores["MG"]
 
 
@@ -204,11 +216,11 @@ def test_fragment_neighbours_use_lennard_jones():
     labels = [(1, "A"), (1, "B")]
     tree, _, _ = build_kdtree({1: {"A": points[0], "B": points[1]}})
     trial = {"X": np.array([3.0, 0.0, 0.0])}
-    mie_score = count_clashes_for_segment(trial, tree, labels, 3.4)
-    lj_score = count_clashes_for_segment(trial, tree, labels, 3.4, fragment={(1, "A")})
+    mie_score = count_clashes_for_segment(trial, tree, labels)
+    lj_score = count_clashes_for_segment(trial, tree, labels, fragment={(1, "A")})
     assert mie_score != lj_score
-    assert count_clashes_for_segment(trial, tree, labels, 3.4, fragment={(2, "A")}) == mie_score
+    assert count_clashes_for_segment(trial, tree, labels, fragment={(2, "A")}) == mie_score
     # An atom given in `extra` scores like a fragment atom in the tree.
     empty_tree, empty_labels, _ = build_kdtree({1: {"B": points[1]}})
-    assert count_clashes_for_segment(trial, empty_tree, empty_labels, 3.4,
+    assert count_clashes_for_segment(trial, empty_tree, empty_labels,
                                      extra={(1, "A"): points[0]}) == pytest.approx(lj_score)

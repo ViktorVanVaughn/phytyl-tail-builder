@@ -153,7 +153,7 @@ def build(tleap_in_path, leap_log_path, templates_dir=None, output_prefix=".",
             options = dict(fragment_potential=fragment_potential, environment_potential=environment_potential,
                            keep_initial_positions=keep_initial_positions and n == 1)
             if builder == "sphere":
-                placed, score = build_sphere(coordinates, res, order, excluded, **options)
+                placed, score = build_sphere(coordinates, res, order, excluded, neighbours(bonds), **options)
             else:
                 placed, score = build_torsion(coordinates, res, order, template, neighbours(bonds), excluded,
                                               beam=beam, dihedral_step=dihedral_step, **options)

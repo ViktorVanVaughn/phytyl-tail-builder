@@ -74,11 +74,11 @@ def test_unknown_potential_is_rejected(tmp_path):
 
 
 def test_second_pass_separates_neighbouring_tails(tmp_path):
-    """Pass 1 builds CHL 220 without the CHL 663 tail that comes later; pass 2 sees both."""
+    """Pass 1 builds CLA 672 and CLA 675 one after the other, 2.0 A apart; pass 2 sees both tails."""
     def tail_contact(**options):
         _, rows = build(MINIMAL / "tleap.in", MINIMAL / "leap.log", output_prefix=tmp_path / str(options),
                         fix_resolved_stereo=True, **options)
-        return float(next(r for r in rows if r["resseq"] == "220")["min_contact"])
+        return float(next(r for r in rows if r["resseq"] == "672")["min_contact"])
     assert tail_contact(passes=1) < 2.5
     assert tail_contact() > 3.0
 
