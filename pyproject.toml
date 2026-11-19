@@ -40,6 +40,7 @@ Issues = "https://github.com/ViktorVanVaughn/phytyl-tail-builder/issues"
 
 [project.scripts]
 phytyl-tail-builder = "phytyl_tail_builder.cli:main"
+phytyl-tail-check = "phytyl_tail_builder.cli:check_main"
 
 [tool.setuptools.dynamic]
 version = {attr = "phytyl_tail_builder.__version__"}

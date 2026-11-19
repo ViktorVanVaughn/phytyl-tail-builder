@@ -1,0 +1,98 @@
+from pathlib import Path
+
+import numpy as np
+import pytest
+
+from phytyl_tail_builder.mol2 import read_mol2
+from phytyl_tail_builder.pdb import read_residues
+from phytyl_tail_builder.stereo import (
+    CENTRES,
+    R_SIGN,
+    REFERENCE,
+    check_residue,
+    chirality,
+    dihedral,
+    is_ok,
+    report_rows,
+)
+
+MINIMAL = Path(__file__).resolve().parent.parent / "examples" / "minimal"
+V010 = MINIMAL / "expected" / "default" / "LCC_no_sc_no_Hy.pdb"
+
+
+def residues_by_resseq(path, resseqs):
+    residues = read_residues(path)
+    return {r['resseq']: r for r in residues if r['resseq'] in resseqs and r['name'] in ("CLA", "CHL")}
+
+
+def test_reference_is_the_cla_template():
+    template, _ = read_mol2(MINIMAL / "CLA.mol2")
+    for name, xyz in REFERENCE.items():
+        assert np.allclose(template[name], xyz, atol=1e-3), name
+
+
+def test_chirality_calibration_on_templates():
+    """CLA.mol2 is (2E,7R,11R). CHL.mol2 (and CHL.lib) has both centres inverted (S,S)."""
+    cla, _ = read_mol2(MINIMAL / "CLA.mol2")
+    chl, _ = read_mol2(MINIMAL / "CHL.mol2")
+    assert {k: check_residue(cla)[k] for k in ("C8", "C13", "C2=C3")} == {"C8": "R", "C13": "R", "C2=C3": "E"}
+    assert {k: check_residue(chl)[k] for k in ("C8", "C13", "C2=C3")} == {"C8": "S", "C13": "S", "C2=C3": "E"}
+    # Independent check: with the substituents in CIP order (C7 > C10 > C9 and C12 > C15 > C14),
+    # R means 1 -> 2 -> 3 runs clockwise with H at the back, i.e. a negative signed volume.
+    assert chirality(cla, "C8", "C7", "C10", "C9") == -1
+    assert chirality(cla, "C13", "C12", "C15", "C14") == -1
+    assert R_SIGN == {c: chirality(cla, c, *s) for c, s in CENTRES.items()}
+
+
+def test_mirror_image_inverts_both_centres():
+    mirrored = {n: xyz * [1, 1, -1] for n, xyz in REFERENCE.items()}
+    result = check_residue(mirrored)
+    assert (result["C8"], result["C13"], result["C2=C3"]) == ("S", "S", "E")
+
+
+def test_dihedral():
+    p = [np.array(v, float) for v in ([1, 0, 0], [0, 0, 0], [0, 0, 1], [0, 1, 1])]
+    assert dihedral(*p) == pytest.approx(90.0)
+    assert dihedral(p[0], p[1], p[2], np.array([-1.0, 0, 1])) == pytest.approx(180.0)
+    assert dihedral(p[0], p[1], p[2], np.array([1.0, 0, 1])) == pytest.approx(0.0)
+    assert np.isnan(dihedral(p[0], p[1], np.array([2.0, 0, 0]), p[3]))
+
+
+def test_check_residue_flags_angles_bonds_and_z():
+    coords = dict(REFERENCE)
+    assert check_residue(coords)["bad_angles"] == [] and check_residue(coords)["bad_bonds"] == []
+    coords["C5"], coords["C4"] = REFERENCE["C4"], REFERENCE["C5"]
+    coords["C20"] = REFERENCE["C18"] + 2.0 * (REFERENCE["C18"] - REFERENCE["C17"]) / 1.53
+    result = check_residue(coords)
+    assert result["C2=C3"] == "Z"
+    assert ("C17", "C18", "C20") in [a[:3] for a in result["bad_angles"]]
+    assert result["worst_angle"][3] == pytest.approx(180.0)
+    assert ("C18", "C20") in [b[:2] for b in result["bad_bonds"]]
+    assert not is_ok(result)
+
+
+def test_review_findings_on_v010_output():
+    """Step 0: the v0.1.0 golden output (examples/minimal/expected/default) is stereochemically wrong."""
+    res = residues_by_resseq(V010, {"663", "669", "719"})
+    result = {k: check_residue(r['atoms']) for k, r in res.items()}
+    assert (result["669"]["C8"], result["669"]["C13"]) == ("S", "S")
+    assert (result["719"]["C8"], result["719"]["C13"]) == ("S", "S")
+    assert (result["663"]["C8"], result["663"]["C13"]) == ("R", "S")
+    # Not E: C1-C2-C3-C5 = 100.5 and -137.2 degrees.
+    assert result["663"]["dihedral"] == pytest.approx(100.5, abs=0.1)
+    assert result["719"]["dihedral"] == pytest.approx(-137.2, abs=0.1)
+    assert result["663"]["C2=C3"] == result["719"]["C2=C3"] == "twisted"
+    worst = sorted(max(a[3] for a in r["bad_angles"]) for r in result.values())
+    assert worst[0] == pytest.approx(160.0, abs=0.1) and worst[-1] == pytest.approx(180.0, abs=0.05)
+    # The 180-degree angle C10-C11-C12 leaves dihedrals through it undefined.
+    a = res["669"]['atoms']
+    assert np.isnan(dihedral(a["C9"], a["C10"], a["C11"], a["C12"]))
+    assert not any(is_ok(r) for r in result.values())
+
+
+def test_report_rows_mark_incomplete_tails():
+    residues = read_residues(MINIMAL / "LCC_input.pdb")
+    rows = {r["resseq"]: r for r in report_rows(residues, range(len(residues))) if r["resname"] == "CHL"}
+    assert rows["663"]["ok"] == "incomplete" and rows["663"]["C8"] == "-"
+    assert rows["440"]["C8"] == "S" and rows["440"]["ok"] == "no"  # resolved in the cryo-EM model
+

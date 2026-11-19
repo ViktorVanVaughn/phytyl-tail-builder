@@ -14,13 +14,14 @@ from .pdb import (
     residue_label,
     write_coordinates,
 )
+from .stereo import check_residue, report_rows, write_report
 
 logger = logging.getLogger(__name__)
 
 
 def build(tleap_in_path, leap_log_path, templates_dir=None, output_prefix=".",
           fragment_potential="lj", environment_potential="mie", keep_initial_positions=False):
-    """Rebuild tail positions and write <savepdb name>_no_Hy.pdb.
+    """Rebuild tail positions, write <savepdb name>_no_Hy.pdb and stereo_report.tsv.
 
     tleap_in_path  tleap script with loadpdb (before LEaP) and savepdb (after LEaP)
     leap_log_path  leap.log of that run (only its last session is read)
@@ -29,8 +30,8 @@ def build(tleap_in_path, leap_log_path, templates_dir=None, output_prefix=".",
     fragment_potential, environment_potential, keep_initial_positions
                    see optimizer.count_clashes_for_segment and build_sphere
 
-    Returns the path of the written PDB, or of the savepdb file when there is
-    nothing to place.
+    Returns (path, rows): the written PDB (or the savepdb file when there is
+    nothing to place) and the stereo report rows of the rebuilt residues.
     """
     for name in (fragment_potential, environment_potential):
         if name not in POTENTIALS:
@@ -58,7 +59,7 @@ def build(tleap_in_path, leap_log_path, templates_dir=None, output_prefix=".",
     extracted_atoms = parse_leap_log_for_atoms(leap_log_path)
     if not extracted_atoms:
         logger.warning("No added heavy atoms in %s", leap_log_path)
-        return pdb_out
+        return pdb_out, []
 
     templates = {}
     for _, res_name, _ in extracted_atoms:
@@ -82,13 +83,20 @@ def build(tleap_in_path, leap_log_path, templates_dir=None, output_prefix=".",
             missing.setdefault(mapping[num], []).append(atom)
     if not missing:
         logger.warning("No residues with a matching template")
-        return pdb_out
+        return pdb_out, []
     logger.info("%d added atoms in %d residues", sum(map(len, missing.values())), len(missing))
 
     no_h_pdb = Path(output_prefix) / f"{pdb_out.stem}_no_Hy.pdb"
     no_h_pdb.parent.mkdir(parents=True, exist_ok=True)
     remove_hydrogens_from_rebuilt(str(pdb_out), str(no_h_pdb), set(missing))
     coordinates = extract_all_coordinates(str(no_h_pdb))
+
+    for res, atoms in missing.items():
+        wrong = resolved_stereo_errors(
+            {n: xyz for n, xyz in coordinates[res].items() if n not in atoms})
+        if wrong:
+            logger.warning("%s: resolved atoms have %s; kept as in the input",
+                           residue_label(post_residues[res]), ", ".join(wrong.values()))
 
     # Residues are built one by one, each without the tails still to come.
     excluded = {(res, atom) for res, atoms in missing.items() for atom in atoms}
@@ -106,4 +114,16 @@ def build(tleap_in_path, leap_log_path, templates_dir=None, output_prefix=".",
 
     write_coordinates(str(no_h_pdb), updates)
     logger.info("Wrote %s", no_h_pdb)
-    return no_h_pdb
+
+    rows = report_rows(read_residues(no_h_pdb), sorted(missing))
+    write_report(no_h_pdb.parent / "stereo_report.tsv", rows)
+    return no_h_pdb, rows
+
+
+def resolved_stereo_errors(coords):
+    """{'C8'|'C13'|'C2=C3': description} for resolved atoms with a wrong configuration."""
+    result = check_residue(coords)
+    wrong = {c: f"{c} = {result[c]}" for c in ("C8", "C13") if result[c] == "S"}
+    if result["C2=C3"] not in (None, "E"):
+        wrong["C2=C3"] = f"C2=C3 {result['C2=C3']} ({result['dihedral']:.0f} deg)"
+    return wrong

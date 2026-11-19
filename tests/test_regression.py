@@ -32,11 +32,13 @@ def assert_same_structure(result, reference):
 
 
 def run(tmp_path, name, **options):
-    return build(MINIMAL / "tleap.in", MINIMAL / "leap.log", output_prefix=tmp_path / name, **options)
+    out, _ = build(MINIMAL / "tleap.in", MINIMAL / "leap.log", output_prefix=tmp_path / name, **options)
+    return out
 
 
 # examples/minimal/expected/default and all-mie hold the v0.1.0 output (3 residues, from the
-# full-system leap.log of v0.1.0); they are kept unchanged for reference.
+# full-system leap.log of v0.1.0, no stereo control); they are kept unchanged for reference
+# and for tests/test_stereo.py.
 @pytest.mark.parametrize("name,options", [
     ("sphere", {}),
     ("sphere-all-mie", {"fragment_potential": "mie", "environment_potential": "mie",
@@ -45,6 +47,8 @@ def run(tmp_path, name, **options):
 def test_golden_output(tmp_path, name, options):
     out = run(tmp_path, name, **options)
     assert_same_structure(out, MINIMAL / "expected" / name / "LCC_no_sc_no_Hy.pdb")
+    assert (out.parent / "stereo_report.tsv").read_text() == \
+        (MINIMAL / "expected" / name / "stereo_report.tsv").read_text()
 
 
 @pytest.mark.parametrize("fragment,environment", [("lj", "lj"), ("mie", "lj"), ("mie", "mie")])
@@ -84,5 +88,5 @@ def test_full_data(tmp_path):
     work.mkdir()
     for f in list(data.glob("*.pdb")) + list(data.glob("*.mol2")) + [data / "tleap.in", data / "leap.log"]:
         shutil.copy(f, work)
-    out = build(work / "tleap.in", work / "leap.log", output_prefix=tmp_path / "out")
-    assert out.name.endswith("_no_Hy.pdb")
+    out, rows = build(work / "tleap.in", work / "leap.log", output_prefix=tmp_path / "out")
+    assert out.name.endswith("_no_Hy.pdb") and rows

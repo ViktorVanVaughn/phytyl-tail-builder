@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from phytyl_tail_builder import __version__
-from phytyl_tail_builder.cli import main
+from phytyl_tail_builder.cli import check_main, main
 
 MINIMAL = Path(__file__).resolve().parent.parent / "examples" / "minimal"
 
@@ -44,13 +44,35 @@ def run_cli(tmp_path, *options, module="phytyl_tail_builder.cli"):
 
 
 def test_run_on_minimal_example(tmp_path):
-    result = run_cli(tmp_path)
+    result = run_cli(tmp_path, "--allow-stereo-errors")
     assert result.returncode == 0, result.stderr
     assert (tmp_path / "LCC_no_sc_no_Hy.pdb").exists()
     assert result.stdout.count("Average clash score") == 12
+    report = (tmp_path / "stereo_report.tsv").read_text().splitlines()
+    assert len(report) == 13
+
+
+def test_stereo_gate_fails(tmp_path):
+    result = run_cli(tmp_path)
+    assert result.returncode == 3
+    assert "stereo check failed for" in result.stderr
+    assert "CHL 440: resolved atoms have C8 = S; kept as in the input" in result.stderr
 
 
 def test_unknown_potential_choice():
     with pytest.raises(SystemExit) as exc:
         main(["--tleap-in", "a", "--leap-log", "b", "--tail-potential", "morse"])
     assert exc.value.code == 2
+
+
+def test_check_cli(capsys):
+    assert check_main([str(MINIMAL / "expected" / "default" / "LCC_no_sc_no_Hy.pdb")]) == 1
+    out = capsys.readouterr().out.splitlines()
+    assert out[0].startswith("residue\tresseq") and len(out) == 13
+    assert check_main([str(MINIMAL / "LCC_input.pdb"), "--resnames", "CHL"]) == 1  # 440, 666: C8 = S
+    assert check_main([str(MINIMAL / "LCC_input.pdb"), "--resnames", "CLA"]) == 0  # partial, nothing wrong
+
+
+def test_check_cli_entry_point():
+    result = subprocess.run(["phytyl-tail-check", "--help"], capture_output=True, text=True)
+    assert result.returncode == 0 and "--resnames" in result.stdout
