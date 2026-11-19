@@ -82,9 +82,11 @@ def test_second_pass_separates_neighbouring_tails(tmp_path):
     assert tail_contact() > 3.0
 
 
-def test_passes_must_be_positive(tmp_path):
+@pytest.mark.parametrize("options", [{"passes": 0}, {"beam": 0}, {"dihedral_step": 0},
+                                     {"dihedral_step": -10}])
+def test_search_settings_are_validated(tmp_path, options):
     with pytest.raises(ValueError):
-        run(tmp_path, "p", passes=0)
+        run(tmp_path, "p", **options)
 
 
 def test_fix_resolved_stereo_needs_torsion(tmp_path):

@@ -52,6 +52,10 @@ def build(tleap_in_path, leap_log_path, templates_dir=None, output_prefix=".",
         raise ValueError(f"builder must be one of {BUILDERS}, got {builder!r}")
     if passes < 1:
         raise ValueError("passes must be at least 1")
+    if beam < 1:
+        raise ValueError("beam must be at least 1")
+    if not 0 < dihedral_step <= 360:
+        raise ValueError(f"dihedral_step must be in (0, 360] degrees, got {dihedral_step}")
     if fix_resolved_stereo and builder != "torsion":
         raise ValueError("fix_resolved_stereo needs the torsion builder")
 

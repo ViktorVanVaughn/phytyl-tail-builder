@@ -67,6 +67,12 @@ def test_sphere_builder_fails_the_gate(tmp_path):
     assert run_cli(tmp_path, "--builder", "sphere", "--fix-resolved-stereo").returncode == 2
 
 
+@pytest.mark.parametrize("option", [["--beam", "0"], ["--dihedral-step", "0"], ["--passes", "0"]])
+def test_bad_search_setting_returns_1(tmp_path, option):
+    result = run_cli(tmp_path, *option)
+    assert result.returncode == 1 and "Traceback" not in result.stderr, result.stderr
+
+
 def test_unknown_potential_choice():
     with pytest.raises(SystemExit) as exc:
         main(["--tleap-in", "a", "--leap-log", "b", "--tail-potential", "morse"])
