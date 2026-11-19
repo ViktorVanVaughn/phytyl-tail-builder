@@ -3,6 +3,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+from phytyl_tail_builder.main import build
 from phytyl_tail_builder.mol2 import read_mol2
 from phytyl_tail_builder.pdb import read_residues
 from phytyl_tail_builder.stereo import (
@@ -96,3 +97,17 @@ def test_report_rows_mark_incomplete_tails():
     assert rows["663"]["ok"] == "incomplete" and rows["663"]["C8"] == "-"
     assert rows["440"]["C8"] == "S" and rows["440"]["ok"] == "no"  # resolved in the cryo-EM model
 
+
+def test_example_output_is_natural_phytyl(tmp_path):
+    """Every rebuilt tail of the example is (2E,7R,11R) with no tail angle above 130 degrees."""
+    out, rows = build(MINIMAL / "tleap.in", MINIMAL / "leap.log", output_prefix=tmp_path,
+                      fix_resolved_stereo=True)
+    residues = read_residues(out)
+    rebuilt = [r["residue"] - 1 for r in rows]
+    assert len(rebuilt) == 12
+    for index in rebuilt:
+        result = check_residue(residues[index]['atoms'])
+        assert (result["C8"], result["C13"], result["C2=C3"]) == ("R", "R", "E"), residues[index]['resseq']
+        assert result["bad_angles"] == []
+        # CHL residues of the cryo-EM model have a resolved 1.45 Å CGA-O2A bond (template 1.35 Å).
+        assert {b[:2] for b in result["bad_bonds"]} <= {("CGA", "O2A")}

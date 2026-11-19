@@ -44,14 +44,13 @@ def run_cli(tmp_path, *options, module="phytyl_tail_builder.cli"):
 
 
 def test_run_on_minimal_example(tmp_path):
-    result = run_cli(tmp_path, "--allow-stereo-errors")
+    result = run_cli(tmp_path, "--fix-resolved-stereo")
     assert result.returncode == 0, result.stderr
     assert (tmp_path / "LCC_no_sc_no_Hy.pdb").exists()
     assert result.stdout.count("Average clash score") == 12
+    assert "CHL 440: resolved atoms have C8 = S; discarded and rebuilt" in result.stderr
     report = (tmp_path / "stereo_report.tsv").read_text().splitlines()
-    assert len(report) == 13
-    rows = [line.split("\t") for line in report[1:]]
-    assert [r[1] for r in rows if r[10] != "yes"] == ["440", "666"]
+    assert len(report) == 13 and all(line.split("\t")[10] == "yes" for line in report[1:])
 
 
 def test_stereo_gate_fails_on_resolved_inversions(tmp_path):
@@ -59,11 +58,13 @@ def test_stereo_gate_fails_on_resolved_inversions(tmp_path):
     assert result.returncode == 3
     assert "stereo check failed for CHL 440, CHL 666" in result.stderr
     assert "CHL 440: resolved atoms have C8 = S; kept as in the input" in result.stderr
+    assert "(--fix-resolved-stereo rebuilds them)" in result.stderr
     assert run_cli(tmp_path, "--allow-stereo-errors").returncode == 0
 
 
 def test_sphere_builder_fails_the_gate(tmp_path):
     assert run_cli(tmp_path, "--builder", "sphere").returncode == 3
+    assert run_cli(tmp_path, "--builder", "sphere", "--fix-resolved-stereo").returncode == 2
 
 
 def test_unknown_potential_choice():
@@ -73,9 +74,10 @@ def test_unknown_potential_choice():
 
 
 def test_check_cli(capsys):
-    assert check_main([str(MINIMAL / "expected" / "default" / "LCC_no_sc_no_Hy.pdb")]) == 1
+    assert check_main([str(MINIMAL / "expected" / "torsion-fix-resolved" / "LCC_no_sc_no_Hy.pdb")]) == 0
     out = capsys.readouterr().out.splitlines()
     assert out[0].startswith("residue\tresseq") and len(out) == 13
+    assert check_main([str(MINIMAL / "expected" / "default" / "LCC_no_sc_no_Hy.pdb")]) == 1
     assert check_main([str(MINIMAL / "LCC_input.pdb"), "--resnames", "CHL"]) == 1  # 440, 666: C8 = S
     assert check_main([str(MINIMAL / "LCC_input.pdb"), "--resnames", "CLA"]) == 0  # partial, nothing wrong
 

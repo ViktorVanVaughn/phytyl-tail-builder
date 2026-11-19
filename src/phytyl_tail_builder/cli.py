@@ -35,6 +35,9 @@ def main(argv=None):
     parser.add_argument('--passes', type=int, default=2,
                         help="torsion builder: 1 builds each tail once, in order; each further pass "
                              "rebuilds every tail with all the other tails in place (default: 2)")
+    parser.add_argument('--fix-resolved-stereo', action='store_true',
+                        help="torsion builder: discard resolved tail atoms from a wrong stereocentre "
+                             "(or a non-E C2=C3) outward and rebuild them")
     parser.add_argument('--allow-stereo-errors', action='store_true',
                         help=f"only warn when a rebuilt tail fails the stereo check "
                              f"(default: exit with status {STEREO_FAILED})")
@@ -50,6 +53,8 @@ def main(argv=None):
     parser.add_argument('-v', '--verbose', action='store_true', help='verbose logging')
     parser.add_argument('--version', action='version', version=f'%(prog)s {__version__}')
     args = parser.parse_args(argv)
+    if args.fix_resolved_stereo and args.builder != 'torsion':
+        parser.error('--fix-resolved-stereo needs --builder torsion')
 
     logging.basicConfig(level=logging.INFO if args.verbose else logging.WARNING,
                         format='%(levelname)s: %(message)s')
@@ -58,7 +63,8 @@ def main(argv=None):
                              fragment_potential=args.tail_potential,
                              environment_potential=args.environment_potential,
                              keep_initial_positions=args.keep_tleap_positions, builder=args.builder,
-                             beam=args.beam, dihedral_step=args.dihedral_step, passes=args.passes)
+                             beam=args.beam, dihedral_step=args.dihedral_step, passes=args.passes,
+                             fix_resolved_stereo=args.fix_resolved_stereo)
     except (OSError, ValueError) as e:
         logging.error("%s", e)
         return 1

@@ -36,11 +36,11 @@ def run(tmp_path, name, **options):
     return out
 
 
-# examples/minimal/expected/default and all-mie hold the v0.1.0 output (3 residues, from the
-# full-system leap.log of v0.1.0, no stereo control); they are kept unchanged for reference
-# and for tests/test_stereo.py.
+# examples/minimal/expected/default and all-mie hold the v0.1.0 output (3 residues, no stereo
+# control); they are kept unchanged for reference and for tests/test_stereo.py.
 @pytest.mark.parametrize("name,options", [
     ("torsion", {}),
+    ("torsion-fix-resolved", {"fix_resolved_stereo": True}),
     ("sphere", {"builder": "sphere"}),
     ("sphere-all-mie", {"builder": "sphere", "fragment_potential": "mie", "environment_potential": "mie",
                         "keep_initial_positions": True}),
@@ -72,9 +72,24 @@ def test_unknown_potential_is_rejected(tmp_path):
         run(tmp_path, "u", fragment_potential="morse")
 
 
+def test_second_pass_separates_neighbouring_tails(tmp_path):
+    """Pass 1 builds CHL 220 without the CHL 663 tail that comes later; pass 2 sees both."""
+    def tail_contact(**options):
+        _, rows = build(MINIMAL / "tleap.in", MINIMAL / "leap.log", output_prefix=tmp_path / str(options),
+                        fix_resolved_stereo=True, **options)
+        return float(next(r for r in rows if r["resseq"] == "220")["min_contact"])
+    assert tail_contact(passes=1) < 2.5
+    assert tail_contact() > 3.0
+
+
 def test_passes_must_be_positive(tmp_path):
     with pytest.raises(ValueError):
         run(tmp_path, "p", passes=0)
+
+
+def test_fix_resolved_stereo_needs_torsion(tmp_path):
+    with pytest.raises(ValueError):
+        run(tmp_path, "f", builder="sphere", fix_resolved_stereo=True)
 
 
 def test_minimal_example_moves_only_tail_atoms(tmp_path):
@@ -85,15 +100,31 @@ def test_minimal_example_moves_only_tail_atoms(tmp_path):
     assert moved and all(k[5:8] in ("CHL", "CLA") for k in moved)
 
 
+def test_resolved_atoms_are_kept_unless_discarded(tmp_path):
+    inputs = dict(zip(*read_atoms(MINIMAL / "LCC_input.pdb")))
+    out, rows = build(MINIMAL / "tleap.in", MINIMAL / "leap.log", output_prefix=tmp_path,
+                      fix_resolved_stereo=True)
+    after = read_atoms(out)
+    discarded = {(r["resseq"], a) for r in rows for a in r["discarded"].split() if a != "-"}
+    assert {a for _, a in discarded} == {"C8", "C9", "C10", "C11", "C12", "C13", "C14", "C15"}
+    assert {res for res, _ in discarded} == {"440", "666"}
+    by_name_res = {(label[5:8], label[10:14].strip(), label[:4].strip()): xyz for label, xyz in zip(*after)}
+    for label, xyz in inputs.items():
+        key = (label[5:8], label[10:14].strip(), label[:4].strip())
+        if key[0] in ("CLA", "CHL") and not key[2].startswith("H") and (key[1], key[2]) not in discarded:
+            assert np.allclose(by_name_res[key], xyz, atol=TOL), key
+
+
 @pytest.mark.skipif("PTB_FULL_DATA" not in os.environ,
                     reason="set PTB_FULL_DATA to the full data folder")
 def test_full_data(tmp_path):
-    """PTB_FULL_DATA holds tleap.in, leap.log, the PDBs and the templates. The run must succeed
-    (the v0.1 golden output there is not reproducible after these fixes)."""
+    """PTB_FULL_DATA holds tleap.in, leap.log, the PDBs and the templates. Every rebuilt tail must
+    pass the stereo gate (the v0.1 golden output there is not reproducible after the v0.2 fixes)."""
     data = Path(os.environ["PTB_FULL_DATA"])
     work = tmp_path / "data"
     work.mkdir()
     for f in list(data.glob("*.pdb")) + list(data.glob("*.mol2")) + [data / "tleap.in", data / "leap.log"]:
         shutil.copy(f, work)
-    out, rows = build(work / "tleap.in", work / "leap.log", output_prefix=tmp_path / "out")
-    assert out.name.endswith("_no_Hy.pdb") and rows
+    _, rows = build(work / "tleap.in", work / "leap.log", output_prefix=tmp_path / "out",
+                    fix_resolved_stereo=True)
+    assert rows and all(r["ok"] == "yes" for r in rows), [r for r in rows if r["ok"] != "yes"]

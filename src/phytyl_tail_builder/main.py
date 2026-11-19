@@ -14,7 +14,7 @@ from .pdb import (
     residue_label,
     write_coordinates,
 )
-from .stereo import check_residue, report_rows, write_report
+from .stereo import TAIL_BONDS, check_residue, report_rows, write_report
 from .torsion import build_torsion
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ BUILDERS = ("torsion", "sphere")
 
 def build(tleap_in_path, leap_log_path, templates_dir=None, output_prefix=".",
           fragment_potential="lj", environment_potential="mie", keep_initial_positions=False,
-          builder="torsion", beam=5, dihedral_step=10.0, passes=2):
+          builder="torsion", beam=5, dihedral_step=10.0, fix_resolved_stereo=False, passes=2):
     """Rebuild tail positions, write <savepdb name>_no_Hy.pdb and stereo_report.tsv.
 
     tleap_in_path  tleap script with loadpdb (before LEaP) and savepdb (after LEaP)
@@ -36,6 +36,9 @@ def build(tleap_in_path, leap_log_path, templates_dir=None, output_prefix=".",
                    beam width and dihedral grid step (degrees) of the torsion builder
     passes         torsion builder: 1 builds each residue once, in order; every further pass
                    rebuilds each tail with all the other tails in place
+    fix_resolved_stereo
+                   discard resolved tail atoms from a wrong stereocentre (or Z/twisted
+                   C2=C3) outward and rebuild them (torsion builder only)
     fragment_potential, environment_potential, keep_initial_positions
                    see optimizer.count_clashes_for_segment and build_sphere
 
@@ -49,6 +52,8 @@ def build(tleap_in_path, leap_log_path, templates_dir=None, output_prefix=".",
         raise ValueError(f"builder must be one of {BUILDERS}, got {builder!r}")
     if passes < 1:
         raise ValueError("passes must be at least 1")
+    if fix_resolved_stereo and builder != "torsion":
+        raise ValueError("fix_resolved_stereo needs the torsion builder")
 
     tleap_in_path = Path(tleap_in_path)
     leap_log_path = Path(leap_log_path)
@@ -104,12 +109,22 @@ def build(tleap_in_path, leap_log_path, templates_dir=None, output_prefix=".",
     remove_hydrogens_from_rebuilt(str(pdb_out), str(no_h_pdb), set(missing))
     coordinates = extract_all_coordinates(str(no_h_pdb))
 
+    discarded = {}
     for res, atoms in missing.items():
         wrong = resolved_stereo_errors(
             {n: xyz for n, xyz in coordinates[res].items() if n not in atoms})
-        if wrong:
-            logger.warning("%s: resolved atoms have %s; kept as in the input",
-                           residue_label(post_residues[res]), ", ".join(wrong.values()))
+        if not wrong:
+            continue
+        label = residue_label(post_residues[res])
+        if fix_resolved_stereo:
+            drop = [a for a in discard_from(wrong) if a in coordinates[res] and a not in atoms]
+            discarded[res] = drop
+            atoms.extend(drop)
+            logger.warning("%s: resolved atoms have %s; discarded and rebuilt: %s",
+                           label, ", ".join(wrong.values()), " ".join(drop))
+        else:
+            logger.warning("%s: resolved atoms have %s; kept as in the input "
+                           "(--fix-resolved-stereo rebuilds them)", label, ", ".join(wrong.values()))
 
     # Pass 1 builds the residues one by one, each without the tails still to come.
     # Later passes (torsion builder) rebuild every tail with all the others in place.
@@ -138,7 +153,9 @@ def build(tleap_in_path, leap_log_path, templates_dir=None, output_prefix=".",
     logger.info("Wrote %s", no_h_pdb)
 
     rows = report_rows(read_residues(no_h_pdb), sorted(missing))
-    write_report(no_h_pdb.parent / "stereo_report.tsv", rows)
+    for row in rows:
+        row["discarded"] = " ".join(discarded.get(row["residue"] - 1, [])) or "-"
+    write_report(no_h_pdb.parent / "stereo_report.tsv", rows, ["discarded"])
     return no_h_pdb, rows
 
 
@@ -149,3 +166,24 @@ def resolved_stereo_errors(coords):
     if result["C2=C3"] not in (None, "E"):
         wrong["C2=C3"] = f"C2=C3 {result['C2=C3']} ({result['dihedral']:.0f} deg)"
     return wrong
+
+
+def discard_from(wrong):
+    """Tail atoms to rebuild for the errors of resolved_stereo_errors().
+
+    A wrong centre drops the centre and everything beyond it; a wrong C2=C3
+    keeps C3 and drops C4, C5 and beyond.
+    """
+    order = build_order(TAIL_BONDS, set(neighbours(TAIL_BONDS)) - {"CGA"}, ["CGA"])
+    parent = dict(order)
+    roots = [c for c in ("C8", "C13") if c in wrong]
+    if "C2=C3" in wrong:
+        roots += ["C4", "C5"]
+    drop = []
+    for atom, _ in order:
+        a = atom
+        while a in parent and a not in roots:
+            a = parent[a]
+        if a in roots:
+            drop.append(atom)
+    return drop
