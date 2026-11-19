@@ -13,7 +13,7 @@ from .stereo import REPORT_COLUMNS, has_phytyl, report_rows
 STEREO_FAILED = 3
 
 
-def main(argv=None):
+def build_parser():
     parser = argparse.ArgumentParser(
         prog="phytyl-tail-builder",
         description="Reposition tail atoms added by tleap and write a hydrogen-free PDB.",
@@ -52,6 +52,11 @@ def main(argv=None):
                              "environment while the tail is built")
     parser.add_argument('-v', '--verbose', action='store_true', help='verbose logging')
     parser.add_argument('--version', action='version', version=f'%(prog)s {__version__}')
+    return parser
+
+
+def main(argv=None):
+    parser = build_parser()
     args = parser.parse_args(argv)
     if args.fix_resolved_stereo and args.builder != 'torsion':
         parser.error('--fix-resolved-stereo needs --builder torsion')
@@ -79,7 +84,7 @@ def main(argv=None):
     return 0
 
 
-def check_main(argv=None):
+def build_check_parser():
     parser = argparse.ArgumentParser(
         prog="phytyl-tail-check",
         description="Report C8/C13 R/S, C2=C3 E/Z, closest contact and worst bond angle of every "
@@ -88,13 +93,16 @@ def check_main(argv=None):
                     "can be determined), "
                     "2 if the PDB cannot be read or has none of the residues.",
     )
-    parser.add_argument('pdb')
+    parser.add_argument('pdb', help='PDB file to check')
     parser.add_argument('--resnames', nargs='+', default=None,
                         help='residue names to check (default: every residue with a phytyl ester, '
                              'atoms CGA and O2A/C1-C20 as in CLA, CHL, BCL, PHO)')
     parser.add_argument('--version', action='version', version=f'%(prog)s {__version__}')
-    args = parser.parse_args(argv)
+    return parser
 
+
+def check_main(argv=None):
+    args = build_check_parser().parse_args(argv)
     try:
         residues = read_residues(args.pdb)
     except (OSError, ValueError) as e:
