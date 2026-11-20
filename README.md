@@ -138,7 +138,7 @@ The angle window fits MD frames: on five cluster representatives of a CP29 MD ru
 | `-v, --verbose` | verbose logging |
 | `--version` | show program's version number and exit |
 
-`phytyl-tail-check`: Report C8/C13 R/S, C2=C3 E/Z, closest contact and worst bond angle of every phytyl tail in a PDB. Exit status 1 if any tail is not (R,R,E) or has a bond angle more than 20 degrees from natural phytyl (partial tails fail only on what can be determined), 2 if the PDB cannot be read or has none of the residues.
+`phytyl-tail-check`: Report C8/C13 R/S, C2=C3 E/Z, closest contact and worst bond angle of every phytyl tail in a PDB. Exit status 1 if any tail is not (R,R,E) or has a bond angle more than 20 degrees from natural phytyl or a heavy atom within 2.0 A of another (partial tails fail only on what can be determined), 2 if the PDB cannot be read or has none of the residues.
 
 | Option | Meaning |
 |---|---|

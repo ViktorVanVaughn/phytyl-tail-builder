@@ -89,8 +89,8 @@ def build_check_parser():
         prog="phytyl-tail-check",
         description="Report C8/C13 R/S, C2=C3 E/Z, closest contact and worst bond angle of every "
                     "phytyl tail in a PDB. Exit status 1 if any tail is not (R,R,E) or has a "
-                    "bond angle more than 20 degrees from natural phytyl (partial tails fail only on what "
-                    "can be determined), "
+                    "bond angle more than 20 degrees from natural phytyl or a heavy atom within 2.0 A of "
+                    "another (partial tails fail only on what can be determined), "
                     "2 if the PDB cannot be read or has none of the residues.",
     )
     parser.add_argument('pdb', help='PDB file to check')

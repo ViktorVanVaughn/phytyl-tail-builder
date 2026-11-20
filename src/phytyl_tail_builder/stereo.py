@@ -24,6 +24,8 @@ EZ_DIHEDRAL = ("C1", "C2", "C3", "C5")
 # motion at 300 K spreads tail angles by about 4 degrees, while a misplaced atom gives 160-180 degrees.
 ANGLE_TOLERANCE = 20.0
 BOND_TOLERANCE = 0.1
+# Two heavy atoms more than three bonds apart and closer than this overlap.
+CONTACT_LIMIT = 2.0
 # A tetrahedral tail centre has |signed volume| near 2.5 A^3. Below this its three substituents are coplanar
 # with it (to under a degree), and the sign only reflects rounding of the coordinates.
 PLANAR_VOLUME = 0.05
@@ -200,7 +202,8 @@ def min_contact(residues, index, tree=None, cutoff=6.0):
     return best
 
 
-# ok: yes/no for a complete tail (is_ok); for a partial one, no if has_errors, else incomplete.
+# ok: yes/no for a complete tail (is_ok); for a partial one, no if has_errors, else incomplete;
+# no for any tail with a heavy-atom contact below CONTACT_LIMIT.
 REPORT_COLUMNS = ["residue", "resseq", "resname", "C8", "C13", "C2=C3", "C1-C2-C3-C5",
                   "min_contact", "contact_pair", "worst_angle", "ok"]
 
@@ -214,6 +217,10 @@ def report_rows(residues, indices):
         result = check_residue(res['atoms'])
         contact = min_contact(residues, index, tree)
         worst = result["worst_angle"]
+        ok = ("yes" if is_ok(result) else "no") if all(n in res['atoms'] for n in TAIL_ATOMS) \
+            else "no" if has_errors(result) else "incomplete"
+        if contact is not None and contact[0] < CONTACT_LIMIT:
+            ok = "no"
         rows.append({
             "residue": index + 1, "resseq": res['resseq'], "resname": res['name'],
             "C8": result["C8"] or "-", "C13": result["C13"] or "-", "C2=C3": result["C2=C3"] or "-",
@@ -221,8 +228,7 @@ def report_rows(residues, indices):
             "min_contact": "-" if contact is None else f"{contact[0]:.2f}",
             "contact_pair": "-" if contact is None else f"{contact[1]}-{contact[2]}",
             "worst_angle": "-" if worst is None else f"{'-'.join(worst[:3])} {worst[3]:.1f}",
-            "ok": ("yes" if is_ok(result) else "no") if all(n in res['atoms'] for n in TAIL_ATOMS)
-                  else "no" if has_errors(result) else "incomplete",
+            "ok": ok,
         })
     return rows
 

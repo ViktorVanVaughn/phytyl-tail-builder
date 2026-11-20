@@ -107,6 +107,18 @@ def test_angles_are_judged_against_natural_phytyl():
     assert has_errors(hot) and not is_ok(hot)
 
 
+def test_overlapping_atoms_fail():
+    """A natural tail with an environment atom 1.8 A from C10 fails; at 2.5 A it passes."""
+    out = REFERENCE["C10"] - (REFERENCE["C8"] + REFERENCE["C11"]) / 2      # away from both neighbours
+    out /= np.linalg.norm(out)
+    for distance, ok in ((1.8, "no"), (2.5, "yes")):
+        water = {"O": REFERENCE["C10"] + distance * out}
+        residues = [{"name": "CLA", "resseq": "1", "chain": "", "atoms": dict(REFERENCE)},
+                    {"name": "HOH", "resseq": "2", "chain": "", "atoms": water}]
+        row = report_rows(residues, [0])[0]
+        assert row["ok"] == ok and float(row["min_contact"]) == pytest.approx(distance, abs=0.01)
+
+
 def test_review_findings_on_v010_output():
     """Step 0: the v0.1.0 golden output (examples/minimal/expected/default) is stereochemically wrong."""
     res = residues_by_resseq(V010, {"663", "669", "719"})
