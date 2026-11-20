@@ -74,13 +74,21 @@ def test_unknown_potential_is_rejected(tmp_path):
 
 
 def test_second_pass_separates_neighbouring_tails(tmp_path):
-    """Pass 1 builds CLA 672 and CLA 675 one after the other, 2.0 A apart; pass 2 sees both tails."""
+    """Pass 1 builds CLA 717 and CHL 719 one after the other, about 2 A apart; pass 2 sees both tails."""
     def tail_contact(**options):
         _, rows = build(MINIMAL / "tleap.in", MINIMAL / "leap.log", output_prefix=tmp_path / str(options),
                         fix_resolved_stereo=True, **options)
-        return float(next(r for r in rows if r["resseq"] == "672")["min_contact"])
-    assert tail_contact(passes=1) < 2.5
+        return float(next(r for r in rows if r["resseq"] == "719")["min_contact"])
+    assert tail_contact(passes=1) < 2.3
     assert tail_contact() > 3.0
+
+
+def test_fine_dihedral_grid_does_not_end_in_a_clash(tmp_path):
+    """With 5 degree steps and no diversity, the beam filled with near-identical tails and CHL 663 ended
+    1.67 A from PHE 369 O; the tails must stay clear of overlaps on any grid."""
+    _, rows = build(MINIMAL / "tleap.in", MINIMAL / "leap.log", output_prefix=tmp_path,
+                    fix_resolved_stereo=True, dihedral_step=5.0)
+    assert all(r["ok"] == "yes" for r in rows) and min(float(r["min_contact"]) for r in rows) > 2.0
 
 
 @pytest.mark.parametrize("options", [{"passes": 0}, {"beam": 0}, {"dihedral_step": 0},

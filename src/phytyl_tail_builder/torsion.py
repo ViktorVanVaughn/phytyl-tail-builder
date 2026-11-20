@@ -16,6 +16,9 @@ from .stereo import CENTRES, R_SIGN, TAIL_ATOMS, angle, chirality, dihedral
 
 FIXED_BONDS = {frozenset(("C2", "C3"))}
 FIXED_DIHEDRALS = {("C1", "C2", "C3", "C5"): 180.0}
+# The beam keeps at most one partial tail per DIVERSITY-degree cell of its free dihedrals. With a fine grid
+# the best partial tails otherwise differ by a step or two and all run into the same clash further on.
+DIVERSITY = 30.0
 
 
 def nerf(a, b, c, bond, angle, torsion):
@@ -99,7 +102,8 @@ def build_torsion(coordinates, res, order, template, graph, excluded, fragment_p
     of the environment, and so are the missing atoms of `res` unless
     keep_initial_positions. Scores are summed over atoms; before each free
     dihedral only the `beam` best partial tails are kept (ties: closest to
-    staggered). Returns ({atom_name: xyz}, total_score).
+    staggered), at most one per DIVERSITY cell of their free dihedrals.
+    Returns ({atom_name: xyz}, total_score).
     """
     atoms = coordinates[res]
     missing = [atom for atom, _ in order]
@@ -114,33 +118,42 @@ def build_torsion(coordinates, res, order, template, graph, excluded, fragment_p
     grid = np.arange(-180.0, 180.0, dihedral_step)
 
     def best(states):
-        return sorted(states, key=lambda state: (round(state[0], 6), state[1]))[:beam]
+        kept, cells = [], set()
+        for state in sorted(states, key=lambda state: (round(state[0], 6), state[1])):
+            cell = tuple(int((value + 180.0) % 360.0 // DIVERSITY) for value in state[3])
+            if cell not in cells:
+                cells.add(cell)
+                kept.append(state)
+                if len(kept) == beam:
+                    break
+        return kept
 
     # Prune just before each free dihedral, so the atoms fixed by the previous one
     # (branches, C5) are scored before its value is chosen.
-    states = [(0.0, 0.0, {})]  # (score, stagger penalty, placed)
+    states = [(0.0, 0.0, {}, ())]  # (score, stagger penalty, placed, free dihedral values)
     for step in steps:
         if step.get("free"):
             states = best(states)
         expanded = []
-        for score, penalty, placed in states:
+        for score, penalty, placed, values in states:
             xyz = {**known, **placed}
             if step.get("free"):
-                trials = [(_place(step, xyz, value), _staggered(value)) for value in grid]
+                trials = [(_place(step, xyz, value), _staggered(value), (value,)) for value in grid]
             elif "sibling" in step:
-                trials = [(_place_relative(step, xyz), 0.0)]
+                trials = [(_place_relative(step, xyz), 0.0, ())]
             else:
-                trials = [(_place(step, xyz, step["dihedral"]), 0.0)]
+                trials = [(_place(step, xyz, step["dihedral"]), 0.0, ())]
             extra = {(res, n): v for n, v in placed.items()}
             p = step["refs"][2]                                 # parent: 1-2 and 1-3 partners are not scored
             bonded = {(res, p)} | {(res, n) for n in graph[p]}
-            for position, stagger in trials:
+            for position, stagger, value in trials:
                 s = count_clashes_for_segment({step["atom"]: position}, kdtree, labels, anchors,
                                               fragment_potential, environment_potential, extra, bonded)
-                expanded.append((score + s, penalty + stagger, {**placed, step["atom"]: position}))
+                expanded.append((score + s, penalty + stagger, {**placed, step["atom"]: position},
+                                 values + value))
         states = expanded
 
-    score, _, placed = best(states)[0]
+    score, _, placed, _ = best(states)[0]
     for atom, position in placed.items():
         atoms[atom] = np.round(position, 3)
     return placed, score
