@@ -15,7 +15,7 @@ authors:
   - family-names: "Mennucci"
     given-names: "Benedetta"
     affiliation: "Università di Pisa"
-version: "0.2.0"
+version: "0.2.1"
 date-released: "2026-11-20"
 repository-code: "https://github.com/ViktorVanVaughn/phytyl-tail-builder"
 license: MIT

@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.2.1
+
+### Fixed
+- Contacts are now part of the stereo check: a tail with a heavy atom within 2.0 Å of another heavy atom fails
+  the gate and `phytyl-tail-check`.
+- The beam kept partial tails that differed by a grid step or two, so a fine grid could end in a clash (with
+  `--dihedral-step 5` the example ended with a 1.67 Å contact). It now keeps at most one partial tail per 30°
+  cell of the free dihedrals.
+
+### Changed
+- The minimal example is set up with the corrected cofactor parameters: the chlorophyll b template is
+  (7R,11R) and the C2=C3 torsion `X -c8-c5-X` has phase 180. New `tleap.in` (flat parameter folder, load order
+  ff14SB first), `leap.log` (the full tleap session), `LCC_no_sc.pdb` (tleap's placement with the corrected
+  library), `CHL.mol2` and `CLA.mol2`; reference outputs regenerated. `examples/tleap_rebuild.in` loads the same
+  set.
+
 ## 0.2.0
 
 Tails are now built with natural stereochemistry and checked, and the clash score no longer has a step. The
