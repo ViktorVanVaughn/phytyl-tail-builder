@@ -1,27 +1,26 @@
+# tleap script of the minimal example. $PARAMS is the cofactor parameter folder (CLA, CHL, LUT, NEX ...
+# .lib and .frcmod side by side), with the corrected chlorophyll b template (C8, C13 R) and the C2=C3 torsion
+# X -c8-c5-X at phase 180. Load order: protein, lipids, water, GAFF2, ions, cofactor libraries, cofactor
+# parameters; CHL.lib must come after leaprc.lipid21, where CHL is cholesterol.
+
+source leaprc.protein.ff14SB
 source leaprc.lipid21
 source leaprc.water.tip3p
 source leaprc.gaff2
-source leaprc.protein.ff14SB
-
-
-# Load libraries (charges/topology) for cofactors
-loadoff $PARAMS/data/CLX/CLA.lib
-loadoff $PARAMS/data/NEX/NEX.lib
-loadoff $PARAMS/data/LUT/LUT.lib
-loadoff $PARAMS/data/XAT/XAT.lib
-loadoff $PARAMS/data/CLX/CHL.lib
-loadoff $PARAMS/data/BCR/BCR.lib
-loadoff $PARAMS/data/LHG/LHG.lib
-
-
-# Load parameters for ions and cofactors
 loadamberparams frcmod.ionsjc_tip3p
-loadamberparams $PARAMS/data/CLX/CLX.frcmod
-loadamberparams $PARAMS/data/NEX/NEX.frcmod
-loadamberparams $PARAMS/data/LUT/LUT.frcmod
-loadamberparams $PARAMS/data/XAT/XAT.frcmod
-loadamberparams $PARAMS/data/BCR/BCR.frcmod
-loadamberparams $PARAMS/data/LHG/LHG.frcmod
+
+loadoff $PARAMS/CLA.lib
+loadoff $PARAMS/CHL.lib
+loadoff $PARAMS/LUT.lib
+loadoff $PARAMS/NEX.lib
+loadoff $PARAMS/XAT.lib
+loadoff $PARAMS/BCR.lib
+
+loadamberparams $PARAMS/CLX.frcmod
+loadamberparams $PARAMS/LUT.frcmod
+loadamberparams $PARAMS/NEX.frcmod
+loadamberparams $PARAMS/XAT.frcmod
+loadamberparams $PARAMS/BCR.frcmod
 
 addPdbAtomMap {
   {"HMA1"  "1HMA"}
@@ -87,24 +86,7 @@ addPdbAtomMap {
   {"H93"    "3H9"}
 }
 
-# Load the prepared pdb file 
 LCC = loadpdb LCC_input.pdb
-
-# Add box and ions
-#addIons LCC Na+ 48
-
 check LCC
-#charge LCC
-
-# Change radii for the GBn model
-#set default PBradii bondi
-
-# Save files for visualization 
-#savemol2 LCC LCC.mol2 1
 savepdb LCC LCC_no_sc.pdb
-
-# Save parameters and coordinates
-#saveamberparm LCC LCC.prmtop LCC.inpcrd
-
 quit
-

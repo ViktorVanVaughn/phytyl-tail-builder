@@ -46,17 +46,19 @@ def test_plan_roles():
     assert steps["C10"].get("free") and steps["C19"].get("free")
 
 
-def _isolated(template_name, missing):
-    """A lone residue with the template's ring and nothing around it."""
+def _isolated(template_name, missing, mirror=False):
+    """A lone residue with the template's ring and nothing around it; mirror: its mirror image (C8, C13 S)."""
     template, bonds = read_mol2(MINIMAL / f"{template_name}.mol2")
+    if mirror:
+        template = {n: xyz * [1.0, 1.0, -1.0] for n, xyz in template.items()}
     coords = {0: {n: xyz.copy() for n, xyz in template.items()}}
     present = [n for n in template if n not in missing]
     return coords, build_order(bonds, missing, present), template, neighbours(bonds)
 
 
-@pytest.mark.parametrize("name", ["CLA", "CHL"])
-def test_full_tail_is_natural_even_from_an_s_template(name):
-    coords, order, template, graph = _isolated(name, TAIL)
+@pytest.mark.parametrize("name,mirror", [("CLA", False), ("CHL", False), ("CLA", True), ("CHL", True)])
+def test_full_tail_is_natural_even_from_an_s_template(name, mirror):
+    coords, order, template, graph = _isolated(name, TAIL, mirror)
     build_torsion(coords, 0, order, template, graph, excluded=set())
     result = check_residue(coords[0])
     assert (result["C8"], result["C13"], result["C2=C3"]) == ("R", "R", "E")
@@ -74,9 +76,9 @@ def test_resolved_atoms_and_their_dihedrals_are_kept():
 
 
 def test_chain_atom_next_to_a_resolved_branch_goes_on_the_r_side():
-    """C7, C8, C9 resolved from the S,S CHL template: C10 is placed relative to C9 so C8 is R."""
+    """C7, C8, C9 resolved from an S,S template (mirrored CHL): C10 is placed relative to C9 so C8 is R."""
     missing = TAIL[9:]  # C10..C20
-    coords, order, template, graph = _isolated("CHL", missing)
+    coords, order, template, graph = _isolated("CHL", missing, mirror=True)
     build_torsion(coords, 0, order, template, graph, excluded=set())
     result = check_residue(coords[0])
     assert (result["C8"], result["C13"]) == ("R", "R") and result["bad_angles"] == []

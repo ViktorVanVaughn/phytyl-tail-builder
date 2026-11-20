@@ -10,11 +10,11 @@ In two of them (CHL 440, CHL 666) the resolved C8 is already inverted (7S).
 
 | File | Content |
 |---|---|
-| `tleap.in` | tleap script of the full run, without the lipid `bond` lines; `$PARAMS` stands for the cofactor parameter folder |
-| `leap.log` | `Added missing heavy atom` lines of tleap (AmberTools 25) run on `LCC_input.pdb`, numbered as tleap numbers this file (from its first resSeq, 16) |
+| `tleap.in` | tleap script run on `LCC_input.pdb`; `$PARAMS` stands for the cofactor parameter folder, with the corrected chlorophyll b template (7R,11R) and C2=C3 torsion (`X -c8-c5-X`, phase 180), `.lib` and `.frcmod` files side by side |
+| `leap.log` | the log of that tleap run (AmberTools 25) from its `loadpdb` line on, with the path of the teLeap binary cut to its name; residues numbered as tleap numbers `LCC_input.pdb` (from its first resSeq, 16) |
 | `LCC_input.pdb` | structure before tleap (`loadpdb`) |
 | `LCC_no_sc.pdb` | structure written by tleap (`savepdb`), renumbered as in the full system, without the terminal atoms (OXT, H1-H3) tleap added to the cut protein fragments |
-| `CHL.mol2`, `CLA.mol2` | residue templates |
+| `CHL.mol2`, `CLA.mol2` | residue templates of that parameter set, both (2E,7R,11R) |
 | `expected/torsion/` | reference output of v0.2 with the defaults (exits with status 3: CHL 440, 666) |
 | `expected/torsion-fix-resolved/` | reference output with `--fix-resolved-stereo` |
 | `expected/sphere/` | reference output with `--builder sphere --allow-stereo-errors` |
@@ -37,7 +37,7 @@ output is loaded.
 To build Amber topology from the output:
 
 ```bash
-scripts/check_amber.sh -p ~/parameters/force-fields/PSII_cofactors -r ASP \
+scripts/check_amber.sh -p <parameter folder> -r ASP \
     examples/minimal/tleap.in examples/minimal/LCC_no_sc_no_Hy.pdb
 ```
 
@@ -47,7 +47,7 @@ scripts/check_amber.sh -p ~/parameters/force-fields/PSII_cofactors -r ASP \
 
 tleap script for the full system: loads `LCC_no_sc_no_Hy.pdb`, rebuilds the
 hydrogens and writes `LCC.prmtop` / `LCC.inpcrd`. Replace `$PARAMS` with the
-cofactor parameter folder before running it.
+corrected cofactor parameter folder before running it.
 
 ## Viewing the tails
 

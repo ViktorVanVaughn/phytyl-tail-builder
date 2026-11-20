@@ -1,9 +1,24 @@
-log started: Fri Sep 13 05:32:11 2024
+log started: Fri Nov 20 01:14:46 2026
 
 Log file: ./leap.log
 > LCC = loadpdb LCC_input.pdb
 Loading PDB file: ./LCC_input.pdb
+ (starting new molecule for chain 2)
 Matching PDB residue names to LEaP variables.
+Mapped residue PHE, term: Terminal/beginning, seq. number: 0 to: NPHE.
+Mapped residue GLU, term: Terminal/last, seq. number: 3 to: CGLU.
+Mapped residue TYR, term: Terminal/last, seq. number: 5 to: CTYR.
+Mapped residue PRO, term: Terminal/beginning, seq. number: 6 to: NPRO.
+Mapped residue GLY, term: Terminal/last, seq. number: 7 to: CGLY.
+Mapped residue ARG, term: Terminal/beginning, seq. number: 8 to: NARG.
+Mapped residue GLY, term: Terminal/last, seq. number: 24 to: CGLY.
+Mapped residue ILE, term: Terminal/beginning, seq. number: 25 to: NILE.
+Mapped residue PHE, term: Terminal/last, seq. number: 26 to: CPHE.
+Mapped residue GLU, term: Terminal/beginning, seq. number: 27 to: NGLU.
+Mapped residue LEU, term: Terminal/last, seq. number: 33 to: CLEU.
+Mapped residue ASN, term: Terminal/beginning, seq. number: 34 to: NASN.
+Mapped residue MET, term: Terminal/last, seq. number: 107 to: CMET.
+Mapped residue MET, term: Terminal/last, seq. number: 108 to: CMET.
   Added missing heavy atom: .R<CGLU 19>.A<OXT 16>
   Added missing heavy atom: .R<CHL 20>.A<C1 47>
   Added missing heavy atom: .R<CHL 20>.A<C2 48>
@@ -207,7 +222,1325 @@ Matching PDB residue names to LEaP variables.
   Added missing heavy atom: .R<CHL 138>.A<C18 64>
   Added missing heavy atom: .R<CHL 138>.A<C19 65>
   Added missing heavy atom: .R<CHL 138>.A<C20 66>
+  total atoms in file: 1538
+  Leap added 2048 missing atoms according to residue templates:
+       203 Heavy
+       1845 H / lone pairs
+> check LCC
+Checking 'LCC'....
+
+teLeap: Warning!
+The unperturbed charge of the unit (-7.999992) is not zero.
+
+teLeap: Warning!
+Close contact of 0.742 angstroms between nonbonded atoms HD2 and 1H12
+-------  .R<NPHE 16>.A<HD2 20> and .R<CHL 126>.A<1H12 118>
+
+teLeap: Warning!
+Close contact of 1.194 angstroms between nonbonded atoms HE2 and 3H14
+-------  .R<NPHE 16>.A<HE2 18> and .R<CHL 126>.A<3H14 123>
+
+teLeap: Warning!
+Close contact of 0.644 angstroms between nonbonded atoms HE2 and 2H14
+-------  .R<NPHE 16>.A<HE2 18> and .R<CHL 126>.A<2H14 122>
+
+teLeap: Warning!
+Close contact of 1.359 angstroms between nonbonded atoms HE2 and 1H14
+-------  .R<NPHE 16>.A<HE2 18> and .R<CHL 126>.A<1H14 121>
+
+teLeap: Warning!
+Close contact of 0.504 angstroms between nonbonded atoms HE2 and C14
+-------  .R<NPHE 16>.A<HE2 18> and .R<CHL 126>.A<C14 60>
+
+teLeap: Warning!
+Close contact of 0.626 angstroms between nonbonded atoms CE2 and 2H14
+-------  .R<NPHE 16>.A<CE2 17> and .R<CHL 126>.A<2H14 122>
+
+teLeap: Warning!
+Close contact of 1.378 angstroms between nonbonded atoms CE2 and C14
+-------  .R<NPHE 16>.A<CE2 17> and .R<CHL 126>.A<C14 60>
+
+teLeap: Warning!
+Close contact of 0.824 angstroms between nonbonded atoms 2H17 and 1H14
+-------  .R<CHL 20>.A<2H17 129> and .R<CHL 20>.A<1H14 121>
+
+teLeap: Warning!
+Close contact of 0.805 angstroms between nonbonded atoms 2H12 and 1H9
+-------  .R<CHL 20>.A<2H12 119> and .R<CHL 20>.A<1H9 111>
+
+teLeap: Warning!
+Close contact of 1.442 angstroms between nonbonded atoms 2H10 and 2H14
+-------  .R<CHL 20>.A<2H10 115> and .R<CLA 137>.A<2H14 123>
+
+teLeap: Warning!
+Close contact of 0.978 angstroms between nonbonded atoms 2H7 and 1H4
+-------  .R<CHL 20>.A<2H7 109> and .R<CHL 20>.A<1H4 101>
+
+teLeap: Warning!
+Close contact of 0.951 angstroms between nonbonded atoms 1H7 and 1H4
+-------  .R<CHL 20>.A<1H7 108> and .R<CHL 20>.A<1H4 101>
+
+teLeap: Warning!
+Close contact of 1.038 angstroms between nonbonded atoms 1H4 and C7
+-------  .R<CHL 20>.A<1H4 101> and .R<CHL 20>.A<C7 53>
+
+teLeap: Warning!
+Close contact of 0.940 angstroms between nonbonded atoms HBD and 2H5
+-------  .R<CHL 20>.A<HBD 94> and .R<CLA 137>.A<2H5 106>
+
+teLeap: Warning!
+Close contact of 0.993 angstroms between nonbonded atoms OBD and 1H5
+-------  .R<CHL 20>.A<OBD 41> and .R<CLA 137>.A<1H5 105>
+
+teLeap: Warning!
+Close contact of 1.458 angstroms between nonbonded atoms CAD and 1H5
+-------  .R<CHL 20>.A<CAD 40> and .R<CLA 137>.A<1H5 105>
+
+teLeap: Warning!
+Close contact of 1.440 angstroms between nonbonded atoms H1 and H
+-------  .R<NILE 41>.A<H1 2> and .R<CPHE 42>.A<H 2>
+
+teLeap: Warning!
+Close contact of 0.930 angstroms between nonbonded atoms HH and H56
+-------  .R<TYR 48>.A<HH 15> and .R<NEX 134>.A<H56 100>
+
+teLeap: Warning!
+Close contact of 1.382 angstroms between nonbonded atoms HD23 and HG
+-------  .R<LEU 83>.A<HD23 17> and .R<SER 95>.A<HG 9>
+
+teLeap: Warning!
+Close contact of 0.681 angstroms between nonbonded atoms HD23 and 1H12
+-------  .R<LEU 99>.A<HD23 17> and .R<CLA 131>.A<1H12 119>
+
+teLeap: Warning!
+Close contact of 0.930 angstroms between nonbonded atoms HD23 and C12
+-------  .R<LEU 99>.A<HD23 17> and .R<CLA 131>.A<C12 57>
+
+teLeap: Warning!
+Close contact of 1.045 angstroms between nonbonded atoms HD22 and 3H14
+-------  .R<LEU 99>.A<HD22 16> and .R<CLA 129>.A<3H14 124>
+
+teLeap: Warning!
+Close contact of 0.533 angstroms between nonbonded atoms HD22 and 2H11
+-------  .R<LEU 99>.A<HD22 16> and .R<CLA 131>.A<2H11 118>
+
+teLeap: Warning!
+Close contact of 1.081 angstroms between nonbonded atoms HD22 and C11
+-------  .R<LEU 99>.A<HD22 16> and .R<CLA 131>.A<C11 56>
+
+teLeap: Warning!
+Close contact of 1.002 angstroms between nonbonded atoms CD2 and 2H11
+-------  .R<LEU 99>.A<CD2 14> and .R<CLA 131>.A<2H11 118>
+
+teLeap: Warning!
+Close contact of 1.471 angstroms between nonbonded atoms HD13 and 2H9
+-------  .R<LEU 99>.A<HD13 13> and .R<CLA 129>.A<2H9 113>
+
+teLeap: Warning!
+Close contact of 1.218 angstroms between nonbonded atoms HD13 and 2H10
+-------  .R<LEU 99>.A<HD13 13> and .R<CLA 131>.A<2H10 116>
+
+teLeap: Warning!
+Close contact of 1.271 angstroms between nonbonded atoms HD12 and 3H9
+-------  .R<LEU 99>.A<HD12 12> and .R<CLA 129>.A<3H9 114>
+
+teLeap: Warning!
+Close contact of 1.421 angstroms between nonbonded atoms HD12 and 2H9
+-------  .R<LEU 99>.A<HD12 12> and .R<CLA 129>.A<2H9 113>
+
+teLeap: Warning!
+Close contact of 0.985 angstroms between nonbonded atoms HD12 and 1H9
+-------  .R<LEU 99>.A<HD12 12> and .R<CLA 129>.A<1H9 112>
+
+teLeap: Warning!
+Close contact of 1.080 angstroms between nonbonded atoms HD12 and C9
+-------  .R<LEU 99>.A<HD12 12> and .R<CLA 129>.A<C9 54>
+
+teLeap: Warning!
+Close contact of 0.749 angstroms between nonbonded atoms HD12 and 2H10
+-------  .R<LEU 99>.A<HD12 12> and .R<CLA 131>.A<2H10 116>
+
+teLeap: Warning!
+Close contact of 1.425 angstroms between nonbonded atoms HD12 and 1H10
+-------  .R<LEU 99>.A<HD12 12> and .R<CLA 131>.A<1H10 115>
+
+teLeap: Warning!
+Close contact of 1.146 angstroms between nonbonded atoms HD12 and C10
+-------  .R<LEU 99>.A<HD12 12> and .R<CLA 131>.A<C10 55>
+
+teLeap: Warning!
+Close contact of 1.190 angstroms between nonbonded atoms HD11 and 2H10
+-------  .R<LEU 99>.A<HD11 11> and .R<CLA 131>.A<2H10 116>
+
+teLeap: Warning!
+Close contact of 1.218 angstroms between nonbonded atoms HD11 and H8
+-------  .R<LEU 99>.A<HD11 11> and .R<CLA 131>.A<H8 111>
+
+teLeap: Warning!
+Close contact of 1.121 angstroms between nonbonded atoms HD11 and C10
+-------  .R<LEU 99>.A<HD11 11> and .R<CLA 131>.A<C10 55>
+
+teLeap: Warning!
+Close contact of 1.081 angstroms between nonbonded atoms HD11 and C8
+-------  .R<LEU 99>.A<HD11 11> and .R<CLA 131>.A<C8 53>
+
+teLeap: Warning!
+Close contact of 0.379 angstroms between nonbonded atoms CD1 and 2H10
+-------  .R<LEU 99>.A<CD1 10> and .R<CLA 131>.A<2H10 116>
+
+teLeap: Warning!
+Close contact of 1.289 angstroms between nonbonded atoms CD1 and C10
+-------  .R<LEU 99>.A<CD1 10> and .R<CLA 131>.A<C10 55>
+
+teLeap: Warning!
+Close contact of 0.502 angstroms between nonbonded atoms HD12 and 2H6
+-------  .R<LEU 101>.A<HD12 12> and .R<CLA 131>.A<2H6 108>
+
+teLeap: Warning!
+Close contact of 0.574 angstroms between nonbonded atoms O and 1H20
+-------  .R<LYS 117>.A<O 22> and .R<CHL 135>.A<1H20 134>
+
+teLeap: Warning!
+Close contact of 1.349 angstroms between nonbonded atoms C and 2H19
+-------  .R<ARG 120>.A<C 23> and .R<CHL 135>.A<2H19 132>
+
+teLeap: Warning!
+Close contact of 1.438 angstroms between nonbonded atoms C and H18
+-------  .R<ARG 120>.A<C 23> and .R<CHL 135>.A<H18 130>
+
+teLeap: Warning!
+Close contact of 0.744 angstroms between nonbonded atoms HB3 and 2H17
+-------  .R<ARG 120>.A<HB3 7> and .R<CHL 135>.A<2H17 129>
+
+teLeap: Warning!
+Close contact of 0.780 angstroms between nonbonded atoms HB3 and 1H14
+-------  .R<ARG 120>.A<HB3 7> and .R<CHL 135>.A<1H14 121>
+
+teLeap: Warning!
+Close contact of 1.431 angstroms between nonbonded atoms HB3 and C17
+-------  .R<ARG 120>.A<HB3 7> and .R<CHL 135>.A<C17 63>
+
+teLeap: Warning!
+Close contact of 1.252 angstroms between nonbonded atoms HB2 and 3H19
+-------  .R<ARG 120>.A<HB2 6> and .R<CHL 135>.A<3H19 133>
+
+teLeap: Warning!
+Close contact of 1.096 angstroms between nonbonded atoms CB and 3H19
+-------  .R<ARG 120>.A<CB 5> and .R<CHL 135>.A<3H19 133>
+
+teLeap: Warning!
+Close contact of 1.117 angstroms between nonbonded atoms HA and 2H19
+-------  .R<ARG 120>.A<HA 4> and .R<CHL 135>.A<2H19 132>
+
+teLeap: Warning!
+Close contact of 1.308 angstroms between nonbonded atoms CA and 3H19
+-------  .R<ARG 120>.A<CA 3> and .R<CHL 135>.A<3H19 133>
+
+teLeap: Warning!
+Close contact of 0.581 angstroms between nonbonded atoms CA and 2H19
+-------  .R<ARG 120>.A<CA 3> and .R<CHL 135>.A<2H19 132>
+
+teLeap: Warning!
+Close contact of 0.905 angstroms between nonbonded atoms CA and C19
+-------  .R<ARG 120>.A<CA 3> and .R<CHL 135>.A<C19 65>
+
+teLeap: Warning!
+Close contact of 1.426 angstroms between nonbonded atoms H and 3H19
+-------  .R<ARG 120>.A<H 2> and .R<CHL 135>.A<3H19 133>
+
+teLeap: Warning!
+Close contact of 1.076 angstroms between nonbonded atoms H and 1H19
+-------  .R<ARG 120>.A<H 2> and .R<CHL 135>.A<1H19 131>
+
+teLeap: Warning!
+Close contact of 1.488 angstroms between nonbonded atoms N and 3H19
+-------  .R<ARG 120>.A<N 1> and .R<CHL 135>.A<3H19 133>
+
+teLeap: Warning!
+Close contact of 1.376 angstroms between nonbonded atoms N and 2H19
+-------  .R<ARG 120>.A<N 1> and .R<CHL 135>.A<2H19 132>
+
+teLeap: Warning!
+Close contact of 0.872 angstroms between nonbonded atoms N and 1H19
+-------  .R<ARG 120>.A<N 1> and .R<CHL 135>.A<1H19 131>
+
+teLeap: Warning!
+Close contact of 1.112 angstroms between nonbonded atoms N and C19
+-------  .R<ARG 120>.A<N 1> and .R<CHL 135>.A<C19 65>
+
+teLeap: Warning!
+Close contact of 1.105 angstroms between nonbonded atoms H and H18
+-------  .R<LEU 121>.A<H 2> and .R<CHL 135>.A<H18 130>
+
+teLeap: Warning!
+Close contact of 1.321 angstroms between nonbonded atoms H and C18
+-------  .R<LEU 121>.A<H 2> and .R<CHL 135>.A<C18 64>
+
+teLeap: Warning!
+Close contact of 0.480 angstroms between nonbonded atoms N and H18
+-------  .R<LEU 121>.A<N 1> and .R<CHL 135>.A<H18 130>
+
+teLeap: Warning!
+Close contact of 1.354 angstroms between nonbonded atoms N and C18
+-------  .R<LEU 121>.A<N 1> and .R<CHL 135>.A<C18 64>
+
+teLeap: Warning!
+Close contact of 1.176 angstroms between nonbonded atoms 2H16 and 2HBB
+-------  .R<CHL 125>.A<2H16 127> and .R<CHL 125>.A<2HBB 84>
+
+teLeap: Warning!
+Close contact of 1.423 angstroms between nonbonded atoms 3H14 and 2H19
+-------  .R<CHL 125>.A<3H14 123> and .R<CHL 128>.A<2H19 132>
+
+teLeap: Warning!
+Close contact of 1.215 angstroms between nonbonded atoms 2H11 and 1H19
+-------  .R<CHL 125>.A<2H11 117> and .R<CHL 128>.A<1H19 131>
+
+teLeap: Warning!
+Close contact of 1.252 angstroms between nonbonded atoms 1H11 and 2H19
+-------  .R<CHL 125>.A<1H11 116> and .R<CHL 128>.A<2H19 132>
+
+teLeap: Warning!
+Close contact of 0.503 angstroms between nonbonded atoms 1H11 and 2H19
+-------  .R<CHL 125>.A<1H11 116> and .R<CLA 136>.A<2H19 133>
+
+teLeap: Warning!
+Close contact of 1.331 angstroms between nonbonded atoms 1H11 and C19
+-------  .R<CHL 125>.A<1H11 116> and .R<CLA 136>.A<C19 64>
+
+teLeap: Warning!
+Close contact of 1.070 angstroms between nonbonded atoms 2H9 and 2H16
+-------  .R<CHL 125>.A<2H9 112> and .R<CHL 128>.A<2H16 127>
+
+teLeap: Warning!
+Close contact of 1.493 angstroms between nonbonded atoms 2H9 and C16
+-------  .R<CHL 125>.A<2H9 112> and .R<CHL 128>.A<C16 62>
+
+teLeap: Warning!
+Close contact of 0.538 angstroms between nonbonded atoms 1H9 and 3H20
+-------  .R<CHL 125>.A<1H9 111> and .R<CHL 128>.A<3H20 136>
+
+teLeap: Warning!
+Close contact of 0.844 angstroms between nonbonded atoms 1H9 and C20
+-------  .R<CHL 125>.A<1H9 111> and .R<CHL 128>.A<C20 66>
+
+teLeap: Warning!
+Close contact of 1.303 angstroms between nonbonded atoms C11 and 2H19
+-------  .R<CHL 125>.A<C11 57> and .R<CLA 136>.A<2H19 133>
+
+teLeap: Warning!
+Close contact of 1.468 angstroms between nonbonded atoms C10 and H18
+-------  .R<CHL 125>.A<C10 56> and .R<CHL 128>.A<H18 130>
+
+teLeap: Warning!
+Close contact of 1.209 angstroms between nonbonded atoms C9 and 3H20
+-------  .R<CHL 125>.A<C9 55> and .R<CHL 128>.A<3H20 136>
+
+teLeap: Warning!
+Close contact of 0.899 angstroms between nonbonded atoms 2H17 and 1H14
+-------  .R<CHL 126>.A<2H17 129> and .R<CHL 126>.A<1H14 121>
+
+teLeap: Warning!
+Close contact of 0.925 angstroms between nonbonded atoms 2H12 and 1H9
+-------  .R<CHL 126>.A<2H12 119> and .R<CHL 126>.A<1H9 111>
+
+teLeap: Warning!
+Close contact of 0.572 angstroms between nonbonded atoms 2H11 and 2HBB
+-------  .R<CHL 126>.A<2H11 117> and .R<CHL 126>.A<2HBB 84>
+
+teLeap: Warning!
+Close contact of 1.293 angstroms between nonbonded atoms 2H11 and 1HBB
+-------  .R<CHL 126>.A<2H11 117> and .R<CHL 126>.A<1HBB 83>
+
+teLeap: Warning!
+Close contact of 0.764 angstroms between nonbonded atoms 2H11 and CBB
+-------  .R<CHL 126>.A<2H11 117> and .R<CHL 126>.A<CBB 24>
+
+teLeap: Warning!
+Close contact of 1.167 angstroms between nonbonded atoms 1H11 and HAB
+-------  .R<CHL 126>.A<1H11 116> and .R<CHL 126>.A<HAB 82>
+
+teLeap: Warning!
+Close contact of 1.025 angstroms between nonbonded atoms 1H11 and CBB
+-------  .R<CHL 126>.A<1H11 116> and .R<CHL 126>.A<CBB 24>
+
+teLeap: Warning!
+Close contact of 0.495 angstroms between nonbonded atoms 1H11 and CAB
+-------  .R<CHL 126>.A<1H11 116> and .R<CHL 126>.A<CAB 23>
+
+teLeap: Warning!
+Close contact of 1.206 angstroms between nonbonded atoms 1H10 and C4B
+-------  .R<CHL 126>.A<1H10 114> and .R<CHL 126>.A<C4B 21>
+
+teLeap: Warning!
+Close contact of 0.544 angstroms between nonbonded atoms 1H10 and C3B
+-------  .R<CHL 126>.A<1H10 114> and .R<CHL 126>.A<C3B 20>
+
+teLeap: Warning!
+Close contact of 0.852 angstroms between nonbonded atoms 3H9 and 2HMB
+-------  .R<CHL 126>.A<3H9 113> and .R<CHL 126>.A<2HMB 80>
+
+teLeap: Warning!
+Close contact of 1.085 angstroms between nonbonded atoms 3H9 and 1HMB
+-------  .R<CHL 126>.A<3H9 113> and .R<CHL 126>.A<1HMB 79>
+
+teLeap: Warning!
+Close contact of 0.490 angstroms between nonbonded atoms 3H9 and CMB
+-------  .R<CHL 126>.A<3H9 113> and .R<CHL 126>.A<CMB 22>
+
+teLeap: Warning!
+Close contact of 1.273 angstroms between nonbonded atoms 2H9 and 2HMB
+-------  .R<CHL 126>.A<2H9 112> and .R<CHL 126>.A<2HMB 80>
+
+teLeap: Warning!
+Close contact of 1.314 angstroms between nonbonded atoms 2H6 and HHB
+-------  .R<CHL 126>.A<2H6 107> and .R<CHL 126>.A<HHB 67>
+
+teLeap: Warning!
+Close contact of 1.340 angstroms between nonbonded atoms 1H6 and 3HMB
+-------  .R<CHL 126>.A<1H6 106> and .R<CHL 128>.A<3HMB 81>
+
+teLeap: Warning!
+Close contact of 1.277 angstroms between nonbonded atoms 1H6 and 2HMB
+-------  .R<CHL 126>.A<1H6 106> and .R<CHL 128>.A<2HMB 80>
+
+teLeap: Warning!
+Close contact of 0.887 angstroms between nonbonded atoms 1H6 and 1HMB
+-------  .R<CHL 126>.A<1H6 106> and .R<CHL 128>.A<1HMB 79>
+
+teLeap: Warning!
+Close contact of 0.976 angstroms between nonbonded atoms 1H6 and CMB
+-------  .R<CHL 126>.A<1H6 106> and .R<CHL 128>.A<CMB 22>
+
+teLeap: Warning!
+Close contact of 1.429 angstroms between nonbonded atoms 1H5 and H3A
+-------  .R<CHL 126>.A<1H5 104> and .R<CHL 126>.A<H3A 71>
+
+teLeap: Warning!
+Close contact of 1.111 angstroms between nonbonded atoms 1H5 and C4A
+-------  .R<CHL 126>.A<1H5 104> and .R<CHL 126>.A<C4A 10>
+
+teLeap: Warning!
+Close contact of 1.451 angstroms between nonbonded atoms 1H5 and C3A
+-------  .R<CHL 126>.A<1H5 104> and .R<CHL 126>.A<C3A 9>
+
+teLeap: Warning!
+Close contact of 1.463 angstroms between nonbonded atoms 2H4 and C3B
+-------  .R<CHL 126>.A<2H4 102> and .R<CHL 128>.A<C3B 20>
+
+teLeap: Warning!
+Close contact of 1.087 angstroms between nonbonded atoms 1H4 and 2HMB
+-------  .R<CHL 126>.A<1H4 101> and .R<CHL 128>.A<2HMB 80>
+
+teLeap: Warning!
+Close contact of 1.164 angstroms between nonbonded atoms H2 and 1HBA
+-------  .R<CHL 126>.A<H2 100> and .R<CHL 126>.A<1HBA 77>
+
+teLeap: Warning!
+Close contact of 1.478 angstroms between nonbonded atoms H2 and H3A
+-------  .R<CHL 126>.A<H2 100> and .R<CHL 126>.A<H3A 71>
+
+teLeap: Warning!
+Close contact of 1.449 angstroms between nonbonded atoms H2 and CBA
+-------  .R<CHL 126>.A<H2 100> and .R<CHL 126>.A<CBA 13>
+
+teLeap: Warning!
+Close contact of 1.257 angstroms between nonbonded atoms 2H1 and 2HMA
+-------  .R<CHL 126>.A<2H1 99> and .R<CHL 126>.A<2HMA 73>
+
+teLeap: Warning!
+Close contact of 1.138 angstroms between nonbonded atoms 2HBB and C11
+-------  .R<CHL 126>.A<2HBB 84> and .R<CHL 126>.A<C11 57>
+
+teLeap: Warning!
+Close contact of 1.217 angstroms between nonbonded atoms 2HMB and C9
+-------  .R<CHL 126>.A<2HMB 80> and .R<CHL 126>.A<C9 55>
+
+teLeap: Warning!
+Close contact of 1.499 angstroms between nonbonded atoms 2HMA and C1
+-------  .R<CHL 126>.A<2HMA 73> and .R<CHL 126>.A<C1 47>
+
+teLeap: Warning!
+Close contact of 1.227 angstroms between nonbonded atoms H3A and C5
+-------  .R<CHL 126>.A<H3A 71> and .R<CHL 126>.A<C5 51>
+
+teLeap: Warning!
+Close contact of 1.075 angstroms between nonbonded atoms H3A and C3
+-------  .R<CHL 126>.A<H3A 71> and .R<CHL 126>.A<C3 49>
+
+teLeap: Warning!
+Close contact of 1.373 angstroms between nonbonded atoms H3A and C2
+-------  .R<CHL 126>.A<H3A 71> and .R<CHL 126>.A<C2 48>
+
+teLeap: Warning!
+Close contact of 0.600 angstroms between nonbonded atoms C11 and CBB
+-------  .R<CHL 126>.A<C11 57> and .R<CHL 126>.A<CBB 24>
+
+teLeap: Warning!
+Close contact of 1.175 angstroms between nonbonded atoms C11 and CAB
+-------  .R<CHL 126>.A<C11 57> and .R<CHL 126>.A<CAB 23>
+
+teLeap: Warning!
+Close contact of 1.393 angstroms between nonbonded atoms C10 and C3B
+-------  .R<CHL 126>.A<C10 56> and .R<CHL 126>.A<C3B 20>
+
+teLeap: Warning!
+Close contact of 1.384 angstroms between nonbonded atoms C6 and 2HMB
+-------  .R<CHL 126>.A<C6 52> and .R<CHL 128>.A<2HMB 80>
+
+teLeap: Warning!
+Close contact of 1.479 angstroms between nonbonded atoms C4 and 2HMB
+-------  .R<CHL 126>.A<C4 50> and .R<CHL 128>.A<2HMB 80>
+
+teLeap: Warning!
+Close contact of 0.842 angstroms between nonbonded atoms 2H17 and 1H14
+-------  .R<CHL 127>.A<2H17 129> and .R<CHL 127>.A<1H14 121>
+
+teLeap: Warning!
+Close contact of 0.825 angstroms between nonbonded atoms 2H12 and 1H9
+-------  .R<CHL 127>.A<2H12 119> and .R<CHL 127>.A<1H9 111>
+
+teLeap: Warning!
+Close contact of 0.977 angstroms between nonbonded atoms 2H7 and 1H4
+-------  .R<CHL 127>.A<2H7 109> and .R<CHL 127>.A<1H4 101>
+
+teLeap: Warning!
+Close contact of 0.952 angstroms between nonbonded atoms 1H7 and 1H4
+-------  .R<CHL 127>.A<1H7 108> and .R<CHL 127>.A<1H4 101>
+
+teLeap: Warning!
+Close contact of 1.038 angstroms between nonbonded atoms 1H4 and C7
+-------  .R<CHL 127>.A<1H4 101> and .R<CHL 127>.A<C7 53>
+
+teLeap: Warning!
+Close contact of 1.167 angstroms between nonbonded atoms MG and H2
+-------  .R<CHL 127>.A<MG 1> and .R<WAT 139>.A<H2 3>
+
+teLeap: Warning!
+Close contact of 1.438 angstroms between nonbonded atoms 2H20 and 3H20
+-------  .R<CHL 128>.A<2H20 135> and .R<CLA 136>.A<3H20 137>
+
+teLeap: Warning!
+Close contact of 1.159 angstroms between nonbonded atoms 2H20 and 1HBB
+-------  .R<CHL 128>.A<2H20 135> and .R<CLA 136>.A<1HBB 82>
+
+teLeap: Warning!
+Close contact of 1.092 angstroms between nonbonded atoms 3H19 and 1H20
+-------  .R<CHL 128>.A<3H19 133> and .R<CLA 136>.A<1H20 135>
+
+teLeap: Warning!
+Close contact of 1.320 angstroms between nonbonded atoms 3H19 and 1H19
+-------  .R<CHL 128>.A<3H19 133> and .R<CLA 136>.A<1H19 132>
+
+teLeap: Warning!
+Close contact of 0.971 angstroms between nonbonded atoms 2H19 and 3H19
+-------  .R<CHL 128>.A<2H19 132> and .R<CLA 136>.A<3H19 134>
+
+teLeap: Warning!
+Close contact of 0.961 angstroms between nonbonded atoms 2H19 and 2H19
+-------  .R<CHL 128>.A<2H19 132> and .R<CLA 136>.A<2H19 133>
+
+teLeap: Warning!
+Close contact of 1.253 angstroms between nonbonded atoms 2H19 and 1H19
+-------  .R<CHL 128>.A<2H19 132> and .R<CLA 136>.A<1H19 132>
+
+teLeap: Warning!
+Close contact of 0.261 angstroms between nonbonded atoms 2H19 and C19
+-------  .R<CHL 128>.A<2H19 132> and .R<CLA 136>.A<C19 64>
+
+teLeap: Warning!
+Close contact of 0.711 angstroms between nonbonded atoms 1H19 and 1H19
+-------  .R<CHL 128>.A<1H19 131> and .R<CLA 136>.A<1H19 132>
+
+teLeap: Warning!
+Close contact of 1.075 angstroms between nonbonded atoms H18 and H18
+-------  .R<CHL 128>.A<H18 130> and .R<CLA 136>.A<H18 131>
+
+teLeap: Warning!
+Close contact of 1.390 angstroms between nonbonded atoms 2H17 and 3H20
+-------  .R<CHL 128>.A<2H17 129> and .R<CLA 136>.A<3H20 137>
+
+teLeap: Warning!
+Close contact of 1.330 angstroms between nonbonded atoms 2H17 and 2H20
+-------  .R<CHL 128>.A<2H17 129> and .R<CLA 136>.A<2H20 136>
+
+teLeap: Warning!
+Close contact of 1.193 angstroms between nonbonded atoms 2H17 and C20
+-------  .R<CHL 128>.A<2H17 129> and .R<CLA 136>.A<C20 65>
+
+teLeap: Warning!
+Close contact of 1.391 angstroms between nonbonded atoms 1H17 and 2H12
+-------  .R<CHL 128>.A<1H17 128> and .R<CHL 128>.A<2H12 119>
+
+teLeap: Warning!
+Close contact of 1.279 angstroms between nonbonded atoms 1H17 and 2H17
+-------  .R<CHL 128>.A<1H17 128> and .R<CLA 136>.A<2H17 130>
+
+teLeap: Warning!
+Close contact of 1.066 angstroms between nonbonded atoms 1H17 and 1H17
+-------  .R<CHL 128>.A<1H17 128> and .R<CLA 136>.A<1H17 129>
+
+teLeap: Warning!
+Close contact of 1.473 angstroms between nonbonded atoms 1H17 and C18
+-------  .R<CHL 128>.A<1H17 128> and .R<CLA 136>.A<C18 63>
+
+teLeap: Warning!
+Close contact of 0.179 angstroms between nonbonded atoms 1H17 and C17
+-------  .R<CHL 128>.A<1H17 128> and .R<CLA 136>.A<C17 62>
+
+teLeap: Warning!
+Close contact of 1.136 angstroms between nonbonded atoms 2H16 and 2H16
+-------  .R<CHL 128>.A<2H16 127> and .R<CLA 136>.A<2H16 128>
+
+teLeap: Warning!
+Close contact of 0.862 angstroms between nonbonded atoms 2H15 and 2H15
+-------  .R<CHL 128>.A<2H15 125> and .R<CLA 136>.A<2H15 126>
+
+teLeap: Warning!
+Close contact of 1.151 angstroms between nonbonded atoms 2H14 and 1H15
+-------  .R<CHL 128>.A<2H14 122> and .R<CLA 136>.A<1H15 125>
+
+teLeap: Warning!
+Close contact of 1.103 angstroms between nonbonded atoms 2H14 and 1H11
+-------  .R<CHL 128>.A<2H14 122> and .R<CLA 136>.A<1H11 117>
+
+teLeap: Warning!
+Close contact of 0.980 angstroms between nonbonded atoms H13 and 1H16
+-------  .R<CHL 128>.A<H13 120> and .R<CLA 136>.A<1H16 127>
+
+teLeap: Warning!
+Close contact of 1.314 angstroms between nonbonded atoms 2H12 and 1H17
+-------  .R<CHL 128>.A<2H12 119> and .R<CLA 136>.A<1H17 129>
+
+teLeap: Warning!
+Close contact of 1.337 angstroms between nonbonded atoms 2H12 and 1H14
+-------  .R<CHL 128>.A<2H12 119> and .R<CLA 136>.A<1H14 122>
+
+teLeap: Warning!
+Close contact of 1.349 angstroms between nonbonded atoms 2H12 and C17
+-------  .R<CHL 128>.A<2H12 119> and .R<CLA 136>.A<C17 62>
+
+teLeap: Warning!
+Close contact of 1.426 angstroms between nonbonded atoms 2H12 and C16
+-------  .R<CHL 128>.A<2H12 119> and .R<CLA 136>.A<C16 61>
+
+teLeap: Warning!
+Close contact of 1.488 angstroms between nonbonded atoms 2H12 and C14
+-------  .R<CHL 128>.A<2H12 119> and .R<CLA 136>.A<C14 59>
+
+teLeap: Warning!
+Close contact of 0.792 angstroms between nonbonded atoms 1H12 and C13
+-------  .R<CHL 128>.A<1H12 118> and .R<CLA 136>.A<C13 58>
+
+teLeap: Warning!
+Close contact of 1.291 angstroms between nonbonded atoms 1H12 and C12
+-------  .R<CHL 128>.A<1H12 118> and .R<CLA 136>.A<C12 57>
+
+teLeap: Warning!
+Close contact of 1.474 angstroms between nonbonded atoms 1H11 and 2H20
+-------  .R<CHL 128>.A<1H11 116> and .R<CLA 136>.A<2H20 136>
+
+teLeap: Warning!
+Close contact of 1.392 angstroms between nonbonded atoms 1H11 and 2H17
+-------  .R<CHL 128>.A<1H11 116> and .R<CLA 136>.A<2H17 130>
+
+teLeap: Warning!
+Close contact of 1.256 angstroms between nonbonded atoms 2H10 and 3H19
+-------  .R<CHL 128>.A<2H10 115> and .R<CLA 136>.A<3H19 134>
+
+teLeap: Warning!
+Close contact of 1.443 angstroms between nonbonded atoms 1H10 and 3H14
+-------  .R<CHL 128>.A<1H10 114> and .R<CLA 136>.A<3H14 124>
+
+teLeap: Warning!
+Close contact of 1.015 angstroms between nonbonded atoms 1H10 and 1H14
+-------  .R<CHL 128>.A<1H10 114> and .R<CLA 136>.A<1H14 122>
+
+teLeap: Warning!
+Close contact of 1.247 angstroms between nonbonded atoms 1H10 and C14
+-------  .R<CHL 128>.A<1H10 114> and .R<CLA 136>.A<C14 59>
+
+teLeap: Warning!
+Close contact of 0.788 angstroms between nonbonded atoms C19 and 1H19
+-------  .R<CHL 128>.A<C19 65> and .R<CLA 136>.A<1H19 132>
+
+teLeap: Warning!
+Close contact of 0.844 angstroms between nonbonded atoms C19 and C19
+-------  .R<CHL 128>.A<C19 65> and .R<CLA 136>.A<C19 64>
+
+teLeap: Warning!
+Close contact of 1.414 angstroms between nonbonded atoms C19 and C18
+-------  .R<CHL 128>.A<C19 65> and .R<CLA 136>.A<C18 63>
+
+teLeap: Warning!
+Close contact of 0.265 angstroms between nonbonded atoms C18 and H18
+-------  .R<CHL 128>.A<C18 64> and .R<CLA 136>.A<H18 131>
+
+teLeap: Warning!
+Close contact of 1.086 angstroms between nonbonded atoms C18 and C18
+-------  .R<CHL 128>.A<C18 64> and .R<CLA 136>.A<C18 63>
+
+teLeap: Warning!
+Close contact of 1.346 angstroms between nonbonded atoms C17 and H18
+-------  .R<CHL 128>.A<C17 63> and .R<CLA 136>.A<H18 131>
+
+teLeap: Warning!
+Close contact of 1.190 angstroms between nonbonded atoms C17 and C18
+-------  .R<CHL 128>.A<C17 63> and .R<CLA 136>.A<C18 63>
+
+teLeap: Warning!
+Close contact of 1.228 angstroms between nonbonded atoms C17 and C17
+-------  .R<CHL 128>.A<C17 63> and .R<CLA 136>.A<C17 62>
+
+teLeap: Warning!
+Close contact of 0.479 angstroms between nonbonded atoms C16 and 2H16
+-------  .R<CHL 128>.A<C16 62> and .R<CLA 136>.A<2H16 128>
+
+teLeap: Warning!
+Close contact of 1.422 angstroms between nonbonded atoms C16 and C16
+-------  .R<CHL 128>.A<C16 62> and .R<CLA 136>.A<C16 61>
+
+teLeap: Warning!
+Close contact of 1.202 angstroms between nonbonded atoms C15 and 2H16
+-------  .R<CHL 128>.A<C15 61> and .R<CLA 136>.A<2H16 128>
+
+teLeap: Warning!
+Close contact of 1.304 angstroms between nonbonded atoms C15 and C16
+-------  .R<CHL 128>.A<C15 61> and .R<CLA 136>.A<C16 61>
+
+teLeap: Warning!
+Close contact of 0.880 angstroms between nonbonded atoms C14 and 1H15
+-------  .R<CHL 128>.A<C14 60> and .R<CLA 136>.A<1H15 125>
+
+teLeap: Warning!
+Close contact of 1.227 angstroms between nonbonded atoms C13 and 1H16
+-------  .R<CHL 128>.A<C13 59> and .R<CLA 136>.A<1H16 127>
+
+teLeap: Warning!
+Close contact of 1.067 angstroms between nonbonded atoms C13 and 1H15
+-------  .R<CHL 128>.A<C13 59> and .R<CLA 136>.A<1H15 125>
+
+teLeap: Warning!
+Close contact of 1.398 angstroms between nonbonded atoms C13 and C16
+-------  .R<CHL 128>.A<C13 59> and .R<CLA 136>.A<C16 61>
+
+teLeap: Warning!
+Close contact of 1.310 angstroms between nonbonded atoms C13 and C15
+-------  .R<CHL 128>.A<C13 59> and .R<CLA 136>.A<C15 60>
+
+teLeap: Warning!
+Close contact of 1.345 angstroms between nonbonded atoms C12 and C15
+-------  .R<CHL 128>.A<C12 58> and .R<CLA 136>.A<C15 60>
+
+teLeap: Warning!
+Close contact of 1.448 angstroms between nonbonded atoms C12 and C13
+-------  .R<CHL 128>.A<C12 58> and .R<CLA 136>.A<C13 58>
+
+teLeap: Warning!
+Close contact of 0.993 angstroms between nonbonded atoms C11 and 2H17
+-------  .R<CHL 128>.A<C11 57> and .R<CLA 136>.A<2H17 130>
+
+teLeap: Warning!
+Close contact of 0.931 angstroms between nonbonded atoms C11 and 3H14
+-------  .R<CHL 128>.A<C11 57> and .R<CLA 136>.A<3H14 124>
+
+teLeap: Warning!
+Close contact of 1.290 angstroms between nonbonded atoms C10 and 2H17
+-------  .R<CHL 128>.A<C10 56> and .R<CLA 136>.A<2H17 130>
+
+teLeap: Warning!
+Close contact of 1.073 angstroms between nonbonded atoms C10 and 3H14
+-------  .R<CHL 128>.A<C10 56> and .R<CLA 136>.A<3H14 124>
+
+teLeap: Warning!
+Close contact of 0.819 angstroms between nonbonded atoms 3H20 and 1H16
+-------  .R<CLA 129>.A<3H20 137> and .R<CLA 131>.A<1H16 127>
+
+teLeap: Warning!
+Close contact of 1.409 angstroms between nonbonded atoms 3H20 and C16
+-------  .R<CLA 129>.A<3H20 137> and .R<CLA 131>.A<C16 61>
+
+teLeap: Warning!
+Close contact of 1.122 angstroms between nonbonded atoms 2H20 and 1H17
+-------  .R<CLA 129>.A<2H20 136> and .R<CLA 131>.A<1H17 129>
+
+teLeap: Warning!
+Close contact of 0.466 angstroms between nonbonded atoms 2H20 and C17
+-------  .R<CLA 129>.A<2H20 136> and .R<CLA 131>.A<C17 62>
+
+teLeap: Warning!
+Close contact of 1.265 angstroms between nonbonded atoms 2H20 and C16
+-------  .R<CLA 129>.A<2H20 136> and .R<CLA 131>.A<C16 61>
+
+teLeap: Warning!
+Close contact of 1.352 angstroms between nonbonded atoms 1H20 and 3H20
+-------  .R<CLA 129>.A<1H20 135> and .R<CLA 131>.A<3H20 137>
+
+teLeap: Warning!
+Close contact of 1.201 angstroms between nonbonded atoms 1H20 and H18
+-------  .R<CLA 129>.A<1H20 135> and .R<CLA 131>.A<H18 131>
+
+teLeap: Warning!
+Close contact of 1.129 angstroms between nonbonded atoms 1H20 and C20
+-------  .R<CLA 129>.A<1H20 135> and .R<CLA 131>.A<C20 65>
+
+teLeap: Warning!
+Close contact of 0.926 angstroms between nonbonded atoms 1H20 and C18
+-------  .R<CLA 129>.A<1H20 135> and .R<CLA 131>.A<C18 63>
+
+teLeap: Warning!
+Close contact of 0.832 angstroms between nonbonded atoms 2H17 and 1H14
+-------  .R<CLA 129>.A<2H17 130> and .R<CLA 129>.A<1H14 122>
+
+teLeap: Warning!
+Close contact of 1.432 angstroms between nonbonded atoms 2H17 and 2H16
+-------  .R<CLA 129>.A<2H17 130> and .R<CLA 131>.A<2H16 128>
+
+teLeap: Warning!
+Close contact of 1.232 angstroms between nonbonded atoms 2H17 and 2H15
+-------  .R<CLA 129>.A<2H17 130> and .R<CLA 131>.A<2H15 126>
+
+teLeap: Warning!
+Close contact of 0.707 angstroms between nonbonded atoms 1H16 and 1H15
+-------  .R<CLA 129>.A<1H16 127> and .R<CLA 131>.A<1H15 125>
+
+teLeap: Warning!
+Close contact of 1.164 angstroms between nonbonded atoms 1H16 and C15
+-------  .R<CLA 129>.A<1H16 127> and .R<CLA 131>.A<C15 60>
+
+teLeap: Warning!
+Close contact of 1.387 angstroms between nonbonded atoms 1H15 and 1H11
+-------  .R<CLA 129>.A<1H15 125> and .R<CLA 131>.A<1H11 117>
+
+teLeap: Warning!
+Close contact of 1.467 angstroms between nonbonded atoms 3H14 and 2H11
+-------  .R<CLA 129>.A<3H14 124> and .R<CLA 131>.A<2H11 118>
+
+teLeap: Warning!
+Close contact of 1.365 angstroms between nonbonded atoms 1H14 and 2H15
+-------  .R<CLA 129>.A<1H14 122> and .R<CLA 131>.A<2H15 126>
+
+teLeap: Warning!
+Close contact of 0.812 angstroms between nonbonded atoms 2H12 and 1H9
+-------  .R<CLA 129>.A<2H12 120> and .R<CLA 129>.A<1H9 112>
+
+teLeap: Warning!
+Close contact of 1.404 angstroms between nonbonded atoms 2H12 and 1H11
+-------  .R<CLA 129>.A<2H12 120> and .R<CLA 131>.A<1H11 117>
+
+teLeap: Warning!
+Close contact of 1.433 angstroms between nonbonded atoms 3H9 and 2H10
+-------  .R<CLA 129>.A<3H9 114> and .R<CLA 131>.A<2H10 116>
+
+teLeap: Warning!
+Close contact of 1.046 angstroms between nonbonded atoms 3H9 and 1H10
+-------  .R<CLA 129>.A<3H9 114> and .R<CLA 131>.A<1H10 115>
+
+teLeap: Warning!
+Close contact of 1.491 angstroms between nonbonded atoms 3H9 and C10
+-------  .R<CLA 129>.A<3H9 114> and .R<CLA 131>.A<C10 55>
+
+teLeap: Warning!
+Close contact of 1.490 angstroms between nonbonded atoms 2H9 and H11
+-------  .R<CLA 129>.A<2H9 113> and .R<LUT 132>.A<H11 87>
+
+teLeap: Warning!
+Close contact of 1.189 angstroms between nonbonded atoms H8 and H11
+-------  .R<CLA 129>.A<H8 111> and .R<LUT 132>.A<H11 87>
+
+teLeap: Warning!
+Close contact of 0.738 angstroms between nonbonded atoms 1H7 and H12
+-------  .R<CLA 129>.A<1H7 109> and .R<LUT 132>.A<H12 88>
+
+teLeap: Warning!
+Close contact of 1.479 angstroms between nonbonded atoms 1H7 and H10
+-------  .R<CLA 129>.A<1H7 109> and .R<LUT 132>.A<H10 86>
+
+teLeap: Warning!
+Close contact of 1.298 angstroms between nonbonded atoms 1H7 and C37
+-------  .R<CLA 129>.A<1H7 109> and .R<LUT 132>.A<C37 38>
+
+teLeap: Warning!
+Close contact of 1.225 angstroms between nonbonded atoms 1H4 and 1H5
+-------  .R<CLA 129>.A<1H4 102> and .R<CLA 131>.A<1H5 105>
+
+teLeap: Warning!
+Close contact of 1.373 angstroms between nonbonded atoms C20 and 1H16
+-------  .R<CLA 129>.A<C20 65> and .R<CLA 131>.A<1H16 127>
+
+teLeap: Warning!
+Close contact of 1.321 angstroms between nonbonded atoms C20 and C17
+-------  .R<CLA 129>.A<C20 65> and .R<CLA 131>.A<C17 62>
+
+teLeap: Warning!
+Close contact of 1.223 angstroms between nonbonded atoms C20 and C16
+-------  .R<CLA 129>.A<C20 65> and .R<CLA 131>.A<C16 61>
+
+teLeap: Warning!
+Close contact of 0.861 angstroms between nonbonded atoms C18 and 2H16
+-------  .R<CLA 129>.A<C18 63> and .R<CLA 131>.A<2H16 128>
+
+teLeap: Warning!
+Close contact of 1.142 angstroms between nonbonded atoms C17 and 2H16
+-------  .R<CLA 129>.A<C17 62> and .R<CLA 131>.A<2H16 128>
+
+teLeap: Warning!
+Close contact of 1.311 angstroms between nonbonded atoms C16 and 1H15
+-------  .R<CLA 129>.A<C16 61> and .R<CLA 131>.A<1H15 125>
+
+teLeap: Warning!
+Close contact of 1.420 angstroms between nonbonded atoms C8 and H11
+-------  .R<CLA 129>.A<C8 53> and .R<LUT 132>.A<H11 87>
+
+teLeap: Warning!
+Close contact of 0.862 angstroms between nonbonded atoms 2H17 and 1H14
+-------  .R<CLA 130>.A<2H17 130> and .R<CLA 130>.A<1H14 122>
+
+teLeap: Warning!
+Close contact of 0.855 angstroms between nonbonded atoms 2H12 and 1H9
+-------  .R<CLA 130>.A<2H12 120> and .R<CLA 130>.A<1H9 112>
+
+teLeap: Warning!
+Close contact of 0.976 angstroms between nonbonded atoms 2H7 and 1H4
+-------  .R<CLA 130>.A<2H7 110> and .R<CLA 130>.A<1H4 102>
+
+teLeap: Warning!
+Close contact of 0.953 angstroms between nonbonded atoms 1H7 and 1H4
+-------  .R<CLA 130>.A<1H7 109> and .R<CLA 130>.A<1H4 102>
+
+teLeap: Warning!
+Close contact of 1.038 angstroms between nonbonded atoms 1H4 and C7
+-------  .R<CLA 130>.A<1H4 102> and .R<CLA 130>.A<C7 52>
+
+teLeap: Warning!
+Close contact of 1.315 angstroms between nonbonded atoms H2 and O1A
+-------  .R<CLA 130>.A<H2 101> and .R<CLA 130>.A<O1A 15>
+
+teLeap: Warning!
+Close contact of 0.812 angstroms between nonbonded atoms 2H17 and 1H14
+-------  .R<CLA 131>.A<2H17 130> and .R<CLA 131>.A<1H14 122>
+
+teLeap: Warning!
+Close contact of 0.808 angstroms between nonbonded atoms 2H12 and 1H9
+-------  .R<CLA 131>.A<2H12 120> and .R<CLA 131>.A<1H9 112>
+
+teLeap: Warning!
+Close contact of 0.980 angstroms between nonbonded atoms 2H7 and 1H4
+-------  .R<CLA 131>.A<2H7 110> and .R<CLA 131>.A<1H4 102>
+
+teLeap: Warning!
+Close contact of 0.949 angstroms between nonbonded atoms 1H7 and 1H4
+-------  .R<CLA 131>.A<1H7 109> and .R<CLA 131>.A<1H4 102>
+
+teLeap: Warning!
+Close contact of 1.038 angstroms between nonbonded atoms 1H4 and C7
+-------  .R<CLA 131>.A<1H4 102> and .R<CLA 131>.A<C7 52>
+
+teLeap: Warning!
+Close contact of 0.813 angstroms between nonbonded atoms 2H17 and 1H14
+-------  .R<CHL 135>.A<2H17 129> and .R<CHL 135>.A<1H14 121>
+
+teLeap: Warning!
+Close contact of 0.845 angstroms between nonbonded atoms 2H12 and 1H9
+-------  .R<CHL 135>.A<2H12 119> and .R<CHL 135>.A<1H9 111>
+
+teLeap: Warning!
+Close contact of 0.856 angstroms between nonbonded atoms 2H12 and OBD
+-------  .R<CHL 135>.A<2H12 119> and .R<CHL 135>.A<OBD 41>
+
+teLeap: Warning!
+Close contact of 1.442 angstroms between nonbonded atoms 2H10 and O2D
+-------  .R<CHL 135>.A<2H10 115> and .R<CHL 135>.A<O2D 45>
+
+teLeap: Warning!
+Close contact of 1.286 angstroms between nonbonded atoms 1H10 and O2D
+-------  .R<CHL 135>.A<1H10 114> and .R<CHL 135>.A<O2D 45>
+
+teLeap: Warning!
+Close contact of 1.062 angstroms between nonbonded atoms 1H10 and O1D
+-------  .R<CHL 135>.A<1H10 114> and .R<CHL 135>.A<O1D 44>
+
+teLeap: Warning!
+Close contact of 0.814 angstroms between nonbonded atoms 1H10 and CGD
+-------  .R<CHL 135>.A<1H10 114> and .R<CHL 135>.A<CGD 43>
+
+teLeap: Warning!
+Close contact of 1.214 angstroms between nonbonded atoms 3H9 and CBD
+-------  .R<CHL 135>.A<3H9 113> and .R<CHL 135>.A<CBD 42>
+
+teLeap: Warning!
+Close contact of 1.340 angstroms between nonbonded atoms 3H9 and OBD
+-------  .R<CHL 135>.A<3H9 113> and .R<CHL 135>.A<OBD 41>
+
+teLeap: Warning!
+Close contact of 0.430 angstroms between nonbonded atoms 3H9 and CAD
+-------  .R<CHL 135>.A<3H9 113> and .R<CHL 135>.A<CAD 40>
+
+teLeap: Warning!
+Close contact of 0.981 angstroms between nonbonded atoms 1H9 and OBD
+-------  .R<CHL 135>.A<1H9 111> and .R<CHL 135>.A<OBD 41>
+
+teLeap: Warning!
+Close contact of 0.981 angstroms between nonbonded atoms 2H7 and 1H4
+-------  .R<CHL 135>.A<2H7 109> and .R<CHL 135>.A<1H4 101>
+
+teLeap: Warning!
+Close contact of 1.414 angstroms between nonbonded atoms 2H7 and HBD
+-------  .R<CHL 135>.A<2H7 109> and .R<CHL 135>.A<HBD 94>
+
+teLeap: Warning!
+Close contact of 1.404 angstroms between nonbonded atoms 2H7 and CBD
+-------  .R<CHL 135>.A<2H7 109> and .R<CHL 135>.A<CBD 42>
+
+teLeap: Warning!
+Close contact of 0.948 angstroms between nonbonded atoms 1H7 and 1H4
+-------  .R<CHL 135>.A<1H7 108> and .R<CHL 135>.A<1H4 101>
+
+teLeap: Warning!
+Close contact of 1.441 angstroms between nonbonded atoms 1H7 and HBD
+-------  .R<CHL 135>.A<1H7 108> and .R<CHL 135>.A<HBD 94>
+
+teLeap: Warning!
+Close contact of 1.403 angstroms between nonbonded atoms 2H6 and 2HBA
+-------  .R<CHL 135>.A<2H6 107> and .R<CHL 135>.A<2HBA 78>
+
+teLeap: Warning!
+Close contact of 1.357 angstroms between nonbonded atoms 1H6 and 3HED
+-------  .R<CHL 135>.A<1H6 106> and .R<CHL 135>.A<3HED 97>
+
+teLeap: Warning!
+Close contact of 1.486 angstroms between nonbonded atoms 1H6 and 2HBA
+-------  .R<CHL 135>.A<1H6 106> and .R<CHL 135>.A<2HBA 78>
+
+teLeap: Warning!
+Close contact of 1.345 angstroms between nonbonded atoms 1H6 and CED
+-------  .R<CHL 135>.A<1H6 106> and .R<CHL 135>.A<CED 46>
+
+teLeap: Warning!
+Close contact of 1.315 angstroms between nonbonded atoms 1H6 and O2D
+-------  .R<CHL 135>.A<1H6 106> and .R<CHL 135>.A<O2D 45>
+
+teLeap: Warning!
+Close contact of 1.152 angstroms between nonbonded atoms 2H5 and 1HBA
+-------  .R<CHL 135>.A<2H5 105> and .R<CHL 135>.A<1HBA 77>
+
+teLeap: Warning!
+Close contact of 1.075 angstroms between nonbonded atoms 2H5 and CGA
+-------  .R<CHL 135>.A<2H5 105> and .R<CHL 135>.A<CGA 14>
+
+teLeap: Warning!
+Close contact of 1.046 angstroms between nonbonded atoms 2H5 and CBA
+-------  .R<CHL 135>.A<2H5 105> and .R<CHL 135>.A<CBA 13>
+
+teLeap: Warning!
+Close contact of 1.104 angstroms between nonbonded atoms 1H5 and CGA
+-------  .R<CHL 135>.A<1H5 104> and .R<CHL 135>.A<CGA 14>
+
+teLeap: Warning!
+Close contact of 1.348 angstroms between nonbonded atoms 3H4 and C1A
+-------  .R<CHL 135>.A<3H4 103> and .R<CHL 135>.A<C1A 7>
+
+teLeap: Warning!
+Close contact of 1.027 angstroms between nonbonded atoms 2H4 and 2HAA
+-------  .R<CHL 135>.A<2H4 102> and .R<CHL 135>.A<2HAA 76>
+
+teLeap: Warning!
+Close contact of 1.354 angstroms between nonbonded atoms 1H4 and HBD
+-------  .R<CHL 135>.A<1H4 101> and .R<CHL 135>.A<HBD 94>
+
+teLeap: Warning!
+Close contact of 1.038 angstroms between nonbonded atoms 1H4 and C7
+-------  .R<CHL 135>.A<1H4 101> and .R<CHL 135>.A<C7 53>
+
+teLeap: Warning!
+Close contact of 1.178 angstroms between nonbonded atoms H2 and 1HAA
+-------  .R<CHL 135>.A<H2 100> and .R<CHL 135>.A<1HAA 75>
+
+teLeap: Warning!
+Close contact of 1.449 angstroms between nonbonded atoms HBD and C8
+-------  .R<CHL 135>.A<HBD 94> and .R<CHL 135>.A<C8 54>
+
+teLeap: Warning!
+Close contact of 1.280 angstroms between nonbonded atoms HBD and C7
+-------  .R<CHL 135>.A<HBD 94> and .R<CHL 135>.A<C7 53>
+
+teLeap: Warning!
+Close contact of 0.595 angstroms between nonbonded atoms 2HBA and C6
+-------  .R<CHL 135>.A<2HBA 78> and .R<CHL 135>.A<C6 52>
+
+teLeap: Warning!
+Close contact of 0.969 angstroms between nonbonded atoms 2HBA and C5
+-------  .R<CHL 135>.A<2HBA 78> and .R<CHL 135>.A<C5 51>
+
+teLeap: Warning!
+Close contact of 0.709 angstroms between nonbonded atoms 2HAA and C4
+-------  .R<CHL 135>.A<2HAA 76> and .R<CHL 135>.A<C4 50>
+
+teLeap: Warning!
+Close contact of 1.164 angstroms between nonbonded atoms 2HAA and C3
+-------  .R<CHL 135>.A<2HAA 76> and .R<CHL 135>.A<C3 49>
+
+teLeap: Warning!
+Close contact of 1.099 angstroms between nonbonded atoms 1HAA and C3
+-------  .R<CHL 135>.A<1HAA 75> and .R<CHL 135>.A<C3 49>
+
+teLeap: Warning!
+Close contact of 0.390 angstroms between nonbonded atoms 1HAA and C2
+-------  .R<CHL 135>.A<1HAA 75> and .R<CHL 135>.A<C2 48>
+
+teLeap: Warning!
+Close contact of 1.398 angstroms between nonbonded atoms C10 and O2D
+-------  .R<CHL 135>.A<C10 56> and .R<CHL 135>.A<O2D 45>
+
+teLeap: Warning!
+Close contact of 1.302 angstroms between nonbonded atoms C10 and CGD
+-------  .R<CHL 135>.A<C10 56> and .R<CHL 135>.A<CGD 43>
+
+teLeap: Warning!
+Close contact of 1.394 angstroms between nonbonded atoms C9 and OBD
+-------  .R<CHL 135>.A<C9 55> and .R<CHL 135>.A<OBD 41>
+
+teLeap: Warning!
+Close contact of 1.455 angstroms between nonbonded atoms C9 and CAD
+-------  .R<CHL 135>.A<C9 55> and .R<CHL 135>.A<CAD 40>
+
+teLeap: Warning!
+Close contact of 1.269 angstroms between nonbonded atoms C5 and CGA
+-------  .R<CHL 135>.A<C5 51> and .R<CHL 135>.A<CGA 14>
+
+teLeap: Warning!
+Close contact of 0.489 angstroms between nonbonded atoms C5 and CBA
+-------  .R<CHL 135>.A<C5 51> and .R<CHL 135>.A<CBA 13>
+
+teLeap: Warning!
+Close contact of 1.349 angstroms between nonbonded atoms C4 and CAA
+-------  .R<CHL 135>.A<C4 50> and .R<CHL 135>.A<CAA 12>
+
+teLeap: Warning!
+Close contact of 1.264 angstroms between nonbonded atoms C3 and CBA
+-------  .R<CHL 135>.A<C3 49> and .R<CHL 135>.A<CBA 13>
+
+teLeap: Warning!
+Close contact of 0.345 angstroms between nonbonded atoms C3 and CAA
+-------  .R<CHL 135>.A<C3 49> and .R<CHL 135>.A<CAA 12>
+
+teLeap: Warning!
+Close contact of 1.403 angstroms between nonbonded atoms C2 and CAA
+-------  .R<CHL 135>.A<C2 48> and .R<CHL 135>.A<CAA 12>
+
+teLeap: Warning!
+Close contact of 1.320 angstroms between nonbonded atoms 3H20 and 1HBB
+-------  .R<CLA 136>.A<3H20 137> and .R<CLA 136>.A<1HBB 82>
+
+teLeap: Warning!
+Close contact of 1.281 angstroms between nonbonded atoms 1H20 and CHC
+-------  .R<CLA 136>.A<1H20 135> and .R<CLA 136>.A<CHC 4>
+
+teLeap: Warning!
+Close contact of 1.059 angstroms between nonbonded atoms 2H17 and 3H14
+-------  .R<CLA 136>.A<2H17 130> and .R<CLA 136>.A<3H14 124>
+
+teLeap: Warning!
+Close contact of 0.854 angstroms between nonbonded atoms 1H17 and 1H14
+-------  .R<CLA 136>.A<1H17 129> and .R<CLA 136>.A<1H14 122>
+
+teLeap: Warning!
+Close contact of 0.479 angstroms between nonbonded atoms 2H12 and 3H9
+-------  .R<CLA 136>.A<2H12 120> and .R<CLA 136>.A<3H9 114>
+
+teLeap: Warning!
+Close contact of 1.279 angstroms between nonbonded atoms 3H9 and C12
+-------  .R<CLA 136>.A<3H9 114> and .R<CLA 136>.A<C12 57>
+
+teLeap: Warning!
+Close contact of 0.845 angstroms between nonbonded atoms 2H17 and 1H14
+-------  .R<CLA 137>.A<2H17 130> and .R<CLA 137>.A<1H14 122>
+
+teLeap: Warning!
+Close contact of 1.096 angstroms between nonbonded atoms 2H16 and 2H1
+-------  .R<CLA 137>.A<2H16 128> and .R<CHL 138>.A<2H1 99>
+
+teLeap: Warning!
+Close contact of 0.859 angstroms between nonbonded atoms 2H16 and C1
+-------  .R<CLA 137>.A<2H16 128> and .R<CHL 138>.A<C1 47>
+
+teLeap: Warning!
+Close contact of 1.406 angstroms between nonbonded atoms 2H16 and O2A
+-------  .R<CLA 137>.A<2H16 128> and .R<CHL 138>.A<O2A 16>
+
+teLeap: Warning!
+Close contact of 1.403 angstroms between nonbonded atoms 1H16 and O1A
+-------  .R<CLA 137>.A<1H16 127> and .R<CHL 138>.A<O1A 15>
+
+teLeap: Warning!
+Close contact of 1.072 angstroms between nonbonded atoms 1H15 and HBD
+-------  .R<CLA 137>.A<1H15 125> and .R<CHL 138>.A<HBD 94>
+
+teLeap: Warning!
+Close contact of 0.829 angstroms between nonbonded atoms 2H12 and 1H9
+-------  .R<CLA 137>.A<2H12 120> and .R<CLA 137>.A<1H9 112>
+
+teLeap: Warning!
+Close contact of 0.740 angstroms between nonbonded atoms 2H12 and OBD
+-------  .R<CLA 137>.A<2H12 120> and .R<CHL 138>.A<OBD 41>
+
+teLeap: Warning!
+Close contact of 1.453 angstroms between nonbonded atoms 1H11 and C3D
+-------  .R<CLA 137>.A<1H11 117> and .R<CHL 138>.A<C3D 37>
+
+teLeap: Warning!
+Close contact of 1.275 angstroms between nonbonded atoms 2H10 and 2HMD
+-------  .R<CLA 137>.A<2H10 116> and .R<CHL 138>.A<2HMD 92>
+
+teLeap: Warning!
+Close contact of 1.480 angstroms between nonbonded atoms 2H10 and 1HMD
+-------  .R<CLA 137>.A<2H10 116> and .R<CHL 138>.A<1HMD 91>
+
+teLeap: Warning!
+Close contact of 1.136 angstroms between nonbonded atoms 2H10 and CMD
+-------  .R<CLA 137>.A<2H10 116> and .R<CHL 138>.A<CMD 39>
+
+teLeap: Warning!
+Close contact of 1.362 angstroms between nonbonded atoms 2H10 and C2D
+-------  .R<CLA 137>.A<2H10 116> and .R<CHL 138>.A<C2D 36>
+
+teLeap: Warning!
+Close contact of 1.119 angstroms between nonbonded atoms 1H10 and C3D
+-------  .R<CLA 137>.A<1H10 115> and .R<CHL 138>.A<C3D 37>
+
+teLeap: Warning!
+Close contact of 0.447 angstroms between nonbonded atoms 1H10 and C2D
+-------  .R<CLA 137>.A<1H10 115> and .R<CHL 138>.A<C2D 36>
+
+teLeap: Warning!
+Close contact of 0.943 angstroms between nonbonded atoms 1H9 and OBD
+-------  .R<CLA 137>.A<1H9 112> and .R<CHL 138>.A<OBD 41>
+
+teLeap: Warning!
+Close contact of 0.993 angstroms between nonbonded atoms H8 and 1HMD
+-------  .R<CLA 137>.A<H8 111> and .R<CHL 138>.A<1HMD 91>
+
+teLeap: Warning!
+Close contact of 0.977 angstroms between nonbonded atoms 2H7 and 1H4
+-------  .R<CLA 137>.A<2H7 110> and .R<CLA 137>.A<1H4 102>
+
+teLeap: Warning!
+Close contact of 1.379 angstroms between nonbonded atoms 2H7 and 3HMD
+-------  .R<CLA 137>.A<2H7 110> and .R<CHL 138>.A<3HMD 93>
+
+teLeap: Warning!
+Close contact of 0.952 angstroms between nonbonded atoms 1H7 and 1H4
+-------  .R<CLA 137>.A<1H7 109> and .R<CLA 137>.A<1H4 102>
+
+teLeap: Warning!
+Close contact of 1.256 angstroms between nonbonded atoms 1H6 and 2HMD
+-------  .R<CLA 137>.A<1H6 107> and .R<CHL 138>.A<2HMD 92>
+
+teLeap: Warning!
+Close contact of 1.038 angstroms between nonbonded atoms 1H4 and C7
+-------  .R<CLA 137>.A<1H4 102> and .R<CLA 137>.A<C7 52>
+
+teLeap: Warning!
+Close contact of 1.206 angstroms between nonbonded atoms H2 and O1A
+-------  .R<CLA 137>.A<H2 101> and .R<CLA 137>.A<O1A 15>
+
+teLeap: Warning!
+Close contact of 1.265 angstroms between nonbonded atoms C10 and 1HMD
+-------  .R<CLA 137>.A<C10 55> and .R<CHL 138>.A<1HMD 91>
+
+teLeap: Warning!
+Close contact of 1.125 angstroms between nonbonded atoms C10 and CMD
+-------  .R<CLA 137>.A<C10 55> and .R<CHL 138>.A<CMD 39>
+
+teLeap: Warning!
+Close contact of 0.971 angstroms between nonbonded atoms C10 and C2D
+-------  .R<CLA 137>.A<C10 55> and .R<CHL 138>.A<C2D 36>
+
+teLeap: Warning!
+Close contact of 1.104 angstroms between nonbonded atoms C8 and 3HMD
+-------  .R<CLA 137>.A<C8 53> and .R<CHL 138>.A<3HMD 93>
+
+teLeap: Warning!
+Close contact of 1.105 angstroms between nonbonded atoms C8 and 1HMD
+-------  .R<CLA 137>.A<C8 53> and .R<CHL 138>.A<1HMD 91>
+
+teLeap: Warning!
+Close contact of 1.224 angstroms between nonbonded atoms C8 and CMD
+-------  .R<CLA 137>.A<C8 53> and .R<CHL 138>.A<CMD 39>
+
+teLeap: Warning!
+Close contact of 0.613 angstroms between nonbonded atoms C7 and 3HMD
+-------  .R<CLA 137>.A<C7 52> and .R<CHL 138>.A<3HMD 93>
+
+teLeap: Warning!
+Close contact of 0.811 angstroms between nonbonded atoms 2H17 and 1H14
+-------  .R<CHL 138>.A<2H17 129> and .R<CHL 138>.A<1H14 121>
+
+teLeap: Warning!
+Close contact of 0.830 angstroms between nonbonded atoms 2H12 and 1H9
+-------  .R<CHL 138>.A<2H12 119> and .R<CHL 138>.A<1H9 111>
+
+teLeap: Warning!
+Close contact of 0.981 angstroms between nonbonded atoms 2H7 and 1H4
+-------  .R<CHL 138>.A<2H7 109> and .R<CHL 138>.A<1H4 101>
+
+teLeap: Warning!
+Close contact of 0.948 angstroms between nonbonded atoms 1H7 and 1H4
+-------  .R<CHL 138>.A<1H7 108> and .R<CHL 138>.A<1H4 101>
+
+teLeap: Warning!
+Close contact of 1.038 angstroms between nonbonded atoms 1H4 and C7
+-------  .R<CHL 138>.A<1H4 101> and .R<CHL 138>.A<C7 53>
+Checking parameters for unit 'LCC'.
+Checking for bond parameters.
+Checking for angle parameters.
+check:  Warnings: 316
+Unit is OK.
 > savepdb LCC LCC_no_sc.pdb
 Writing pdb file: LCC_no_sc.pdb
+
+teLeap: Warning!
+ Converting N-terminal residue name to PDB format: NPHE -> PHE
+
+teLeap: Warning!
+ Converting C-terminal residue name to PDB format: CGLU -> GLU
+
+teLeap: Warning!
+ Converting C-terminal residue name to PDB format: CTYR -> TYR
+
+teLeap: Warning!
+ Converting N-terminal residue name to PDB format: NPRO -> PRO
+
+teLeap: Warning!
+ Converting C-terminal residue name to PDB format: CGLY -> GLY
+
+teLeap: Warning!
+ Converting N-terminal residue name to PDB format: NARG -> ARG
+
+teLeap: Warning!
+ Converting C-terminal residue name to PDB format: CGLY -> GLY
+
+teLeap: Warning!
+ Converting N-terminal residue name to PDB format: NILE -> ILE
+
+teLeap: Warning!
+ Converting C-terminal residue name to PDB format: CPHE -> PHE
+
+teLeap: Warning!
+ Converting N-terminal residue name to PDB format: NGLU -> GLU
+
+teLeap: Warning!
+ Converting C-terminal residue name to PDB format: CLEU -> LEU
+
+teLeap: Warning!
+ Converting N-terminal residue name to PDB format: NASN -> ASN
+
+teLeap: Warning!
+ Converting C-terminal residue name to PDB format: CMET -> MET
+
+teLeap: Warning!
+ Converting C-terminal residue name to PDB format: CMET -> MET
 > quit
 	Quit
+
+Exiting LEaP: Errors = 0; Warnings = 330; Notes = 0.

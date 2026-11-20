@@ -35,11 +35,11 @@ def test_reference_is_the_cla_template():
 
 
 def test_chirality_calibration_on_templates():
-    """CLA.mol2 is (2E,7R,11R). CHL.mol2 (and CHL.lib) has both centres inverted (S,S)."""
+    """CLA.mol2 and the corrected CHL.mol2 are (2E,7R,11R)."""
     cla, _ = read_mol2(MINIMAL / "CLA.mol2")
     chl, _ = read_mol2(MINIMAL / "CHL.mol2")
     assert {k: check_residue(cla)[k] for k in ("C8", "C13", "C2=C3")} == {"C8": "R", "C13": "R", "C2=C3": "E"}
-    assert {k: check_residue(chl)[k] for k in ("C8", "C13", "C2=C3")} == {"C8": "S", "C13": "S", "C2=C3": "E"}
+    assert {k: check_residue(chl)[k] for k in ("C8", "C13", "C2=C3")} == {"C8": "R", "C13": "R", "C2=C3": "E"}
     # Independent check: with the substituents in CIP order (C7 > C10 > C9 and C12 > C15 > C14),
     # R means 1 -> 2 -> 3 runs clockwise with H at the back, i.e. a negative signed volume.
     assert chirality(cla, "C8", "C7", "C10", "C9") == -1
